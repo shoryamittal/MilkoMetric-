@@ -26,7 +26,7 @@ export default function Logo({ size = 30, withWordmark = true, tone = 'default' 
       </svg>
       {withWordmark && (
         <span className={`font-display text-[17px] font-semibold tracking-tight ${dark ? 'text-white' : 'text-ink'}`}>
-          MastiSense <span className={dark ? 'text-white/70 font-medium' : 'text-ink-soft font-medium'}>AI</span>
+          Agrinex <span className={dark ? 'text-white/70 font-medium' : 'text-ink-soft font-medium'}>AI</span>
         </span>
       )}
     </div>

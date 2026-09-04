@@ -1,4 +1,4 @@
-# MastiSense AI
+# Agrinex AI
 
 **Predict. Prevent. Protect.**
 

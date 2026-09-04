@@ -18,7 +18,7 @@ function ModelStatusCard() {
         </div>
         <Badge tone="ok" dot>Active</Badge>
       </div>
-      <p className="mt-2 font-display text-base font-semibold text-ink">MastiSense Predictive Engine</p>
+      <p className="mt-2 font-display text-base font-semibold text-ink">Agrinex Predictive Engine</p>
       <div className="mt-4 grid grid-cols-2 gap-y-3 text-xs sm:grid-cols-4">
         <div>
           <p className="text-ink-faint">Prediction window</p>
