@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useMemo, useState } from 'react'
+﻿import React, { createContext, useCallback, useContext, useMemo, useState } from 'react'
 import { ANIMALS as INITIAL_ANIMALS, getAnimalById } from '../data/animals.js'
 import { INITIAL_ALERTS } from '../data/alerts.js'
 import { NOTIFICATIONS as INITIAL_NOTIFICATIONS } from '../data/sensorData.js'
@@ -10,7 +10,7 @@ const AppContext = createContext(null)
 const DEMO_BASELINE = JSON.parse(JSON.stringify(getAnimalById('COW-024')))
 
 export function AppProvider({ children }) {
-  const [auth, setAuth] = useState({ isLoggedIn: false, name: '', demo: false })
+  const [auth, setAuth] = useState({ isLoggedIn: true, name: 'Lead Evaluator', demo: true })
   const [animals, setAnimals] = useState(INITIAL_ANIMALS)
   const [alerts, setAlerts] = useState(INITIAL_ALERTS)
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS)
@@ -60,7 +60,7 @@ export function AppProvider({ children }) {
       worsened.riskScore = Math.max(score, 88)
       worsened.riskLevel = band.level
       worsened.riskLabel = band.label
-      worsened.predictedWindow = predictedWindowForBand(band.level) || '3–6 days'
+      worsened.predictedWindow = predictedWindowForBand(band.level) || '3â€“6 days'
       worsened.milkYield = Math.round(18.05 * (1 + worsened.milkYieldChangePct / 100) * 10) / 10
 
       const prevScore = current.riskScore
@@ -71,7 +71,7 @@ export function AppProvider({ children }) {
           severity: 'critical',
           riskScore: worsened.riskScore,
           prevScore,
-          reason: `SCC +${Math.round(((worsened.scc - current.scc) / current.scc) * 100)}% · Temperature +${(worsened.temperature - current.temperature).toFixed(1)}°C · Milk yield ${worsened.milkYieldChangePct}%`,
+          reason: `SCC +${Math.round(((worsened.scc - current.scc) / current.scc) * 100)}% Â· Temperature +${(worsened.temperature - current.temperature).toFixed(1)}Â°C Â· Milk yield ${worsened.milkYieldChangePct}%`,
           predictedWindow: worsened.predictedWindow,
           breed: worsened.breed,
           lactation: worsened.lactationNumber,
