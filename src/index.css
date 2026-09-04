@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-canvas text-ink font-body antialiased;
+    font-feature-settings: "cv01", "ss01";
+  }
+  h1, h2, h3, h4 {
+    @apply font-display;
+  }
+  ::selection {
+    background: #DEEBDF;
+  }
+  *:focus-visible {
+    outline: 2px solid #2F6B44;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #DEDBCE; border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: #C9C5B4; }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .tabular { font-variant-numeric: tabular-nums; }
+}
+
+/* Leaflet marker sizing overrides for custom divIcons */
+.leaflet-container {
+  font-family: 'IBM Plex Sans', sans-serif;
+  background: #F2F1EB;
+}
+.leaflet-popup-content-wrapper {
+  border-radius: 10px;
+}
