@@ -1,6 +1,6 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ShieldAlert, AlertTriangle, ArrowRight, CheckCircle2, Clock, Siren, Syringe, Eye } from 'lucide-react'
+import { ShieldAlert, AlertTriangle, ArrowRight, CheckCircle2, Clock, Siren, Syringe, Eye, Stethoscope } from 'lucide-react'
 import Badge from '../common/Badge.jsx'
 
 export default function LiveTriageTable({ animals = [], alerts = [] }) {
@@ -85,10 +85,10 @@ export default function LiveTriageTable({ animals = [], alerts = [] }) {
               <th className="px-5 py-3 font-semibold">Animal Tag</th>
               <th className="px-4 py-3 font-semibold">Breed & Age</th>
               <th className="px-4 py-3 font-semibold">AI Risk Score</th>
-              <th className="px-4 py-3 font-semibold">Somatic Cells (SCC)</th>
-              <th className="px-4 py-3 font-semibold">Milk & Temp Delta</th>
-              <th className="px-4 py-3 font-semibold">Window to Clinical</th>
-              <th className="px-5 py-3 text-right font-semibold">Instant Protocol Actions</th>
+              <th className="px-4 py-3 font-semibold">AI-Estimated SCC</th>
+              <th className="px-4 py-3 font-semibold">Probe Telemetry (EC / Yield / Temp)</th>
+              <th className="px-4 py-3 font-semibold">Clinical Window</th>
+              <th className="px-5 py-3 text-right font-semibold">Milking & Vet Action Protocols</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-line/70">
@@ -134,27 +134,32 @@ export default function LiveTriageTable({ animals = [], alerts = [] }) {
                   </td>
 
                   <td className="px-4 py-3.5">
-                    <span className="font-semibold text-ink tabular">{animal.scc.toLocaleString()}</span>
-                    <span className="ml-1 text-[11px] text-signal-red">
-                      ↑{Math.round(((animal.scc - 150000) / 150000) * 100)}%
-                    </span>
+                    <div>
+                      <span className="font-semibold text-ink tabular">{animal.scc.toLocaleString()}</span>
+                      <span className="ml-1 text-[10.5px] text-ink-faint">cells/ml</span>
+                    </div>
+                    <div className="text-[11px] font-medium text-signal-red">
+                      ↑{Math.round(((animal.scc - 150000) / 150000) * 100)}% vs baseline
+                    </div>
                   </td>
 
                   <td className="px-4 py-3.5">
                     <div className="space-y-0.5">
-                      <div className="text-[11px] text-signal-red">
-                        Yield: {animal.milkYieldChangePct}%
+                      <div className="font-medium text-[11px] text-signal-red flex items-center gap-1">
+                        <span className="font-semibold">Milk EC:</span> +{animal.conductivity}% ({(4.8 + animal.conductivity * 0.15).toFixed(1)} mS/cm)
                       </div>
-                      <div className="text-[11px] text-signal-amber">
-                        Udder: {animal.temperature}°C (+{(animal.temperature - 38.4).toFixed(1)}°)
+                      <div className="text-[10.5px] text-ink-soft">
+                        Yield: <strong className="text-signal-red">{animal.milkYieldChangePct}%</strong> · Udder: <strong className="text-signal-amber">{animal.temperature}°C</strong>
                       </div>
                     </div>
                   </td>
 
                   <td className="px-4 py-3.5">
                     <div className="flex items-center gap-1.5 font-medium text-ink">
-                      <Clock size={12} className="text-ink-faint" />
-                      <span>{animal.predictedWindow || '5–7 days'}</span>
+                      <Clock size={12} className="text-pasture-600" />
+                      <span className="text-xs font-semibold text-pasture-800 bg-pasture-100/60 px-1.5 py-0.5 rounded">
+                        {animal.predictedWindow || '48–72h'}
+                      </span>
                     </div>
                   </td>
 
@@ -168,22 +173,29 @@ export default function LiveTriageTable({ animals = [], alerts = [] }) {
                         <button
                           onClick={() => handleAction(animal.id, 'Quarantine & Teat Dip')}
                           title="Isolate & Apply Teat Dip Protocol"
-                          className="rounded border border-line bg-canvas-sunken px-2.5 py-1 text-[11px] font-semibold text-ink hover:bg-line/60"
+                          className="rounded border border-line bg-canvas-sunken px-2 py-1 text-[11px] font-semibold text-ink hover:bg-line/60"
                         >
                           Quarantine
                         </button>
                         <button
-                          onClick={() => handleAction(animal.id, 'Milk Line Diverted')}
-                          title="Divert Milk from Bulk Tank"
-                          className="rounded border border-signal-red/30 bg-signal-redSoft px-2.5 py-1 text-[11px] font-semibold text-signal-red hover:bg-signal-red/15"
+                          onClick={() => handleAction(animal.id, 'Milk Diverted')}
+                          title="Divert Milk from Bulk Tank (Milking Advisory)"
+                          className="rounded border border-signal-red/30 bg-signal-redSoft px-2 py-1 text-[11px] font-semibold text-signal-red hover:bg-signal-red/15"
                         >
                           Divert Line
                         </button>
                         <button
-                          onClick={() => navigate(`/animals/${animal.id}`)}
-                          className="flex items-center gap-1 rounded bg-pasture-700 px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-pasture-600"
+                          onClick={() => handleAction(animal.id, 'Vet Tele-Alert Sent')}
+                          title="Instant Veterinary Escalation via SMS/App"
+                          className="flex items-center gap-1 rounded border border-signal-blue/30 bg-signal-blueSoft px-2 py-1 text-[11px] font-semibold text-signal-blue hover:bg-signal-blue/15"
                         >
-                          <Eye size={11} /> Profile
+                          <Stethoscope size={11} /> Alert Vet
+                        </button>
+                        <button
+                          onClick={() => navigate(`/animals/${animal.id}`)}
+                          className="flex items-center gap-1 rounded bg-pasture-700 px-2 py-1 text-[11px] font-semibold text-white hover:bg-pasture-600"
+                        >
+                          <Eye size={11} />
                         </button>
                       </div>
                     )}

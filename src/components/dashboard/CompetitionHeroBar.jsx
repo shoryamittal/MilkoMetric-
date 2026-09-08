@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { Sparkles, Play, RotateCcw, Activity, Radio, Cpu, CheckCircle2, ShieldCheck, Download } from 'lucide-react'
 import { useApp } from '../../context/AppContext.jsx'
 
@@ -29,24 +29,27 @@ export default function CompetitionHeroBar() {
             <span className="inline-flex items-center gap-1.5 rounded-full bg-pasture-500/20 px-2.5 py-0.5 text-xs font-semibold text-pasture-300 ring-1 ring-inset ring-pasture-500/40">
               <span className="h-1.5 w-1.5 animate-pulseDot rounded-full bg-pasture-400" /> Live AI Telemetry
             </span>
-            <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-0.5 text-[11px] font-medium text-white/80">
-              <Cpu size={11} className="text-pasture-300" /> Edge-Inference (LightGBM + LSTM)
+            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/20 px-2 py-0.5 text-[11px] font-semibold text-emerald-300 ring-1 ring-inset ring-emerald-500/30">
+              <Cpu size={11} className="text-emerald-300" /> 100% Offline Edge TinyML
             </span>
-            <span className="text-[11px] text-white/50">Inference latency: 18ms</span>
+            <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-0.5 text-[11px] font-medium text-white/80">
+              <Radio size={11} className="text-pasture-300" /> ESP32 · LoRa / BLE · In-Line EC Probe
+            </span>
+            <span className="text-[11px] text-white/50">Inference latency: 18ms · MQTT Sync: Ready</span>
           </div>
 
           <h2 className="font-display text-lg font-bold sm:text-xl text-white">
-            Pre-Symptomatic Mastitis Prediction Engine
+            Pre-Symptomatic Mastitis Forecasting Engine (SIH26109)
           </h2>
           <p className="text-xs text-white/70 max-w-2xl leading-relaxed">
-            Multi-modal sensor fusion combining In-Line Electrical Conductivity, Somatic Cell Count (SCC),
-            Udder Infrared Thermography, and Rumination telemetry to detect subclinical mastitis 7–10 days before visible clinical signs.
+            Multi-modal sensor fusion combining In-Line Milk Electrical Conductivity (EC), Shed Temperature-Humidity Index (THI),
+            Udder Thermal Telemetry, and Daily Yield Drops to forecast subclinical bovine mastitis <strong>48–72 hours</strong> before visible clinical signs.
           </p>
 
           {/* Quick telemetry strip */}
           <div className="flex flex-wrap items-center gap-4 pt-1 text-[11px] text-white/70">
             <span className="flex items-center gap-1">
-              <Radio size={12} className="text-pasture-400" /> 128 IoT Sensors Active
+              <Radio size={12} className="text-pasture-400" /> 128 IoT Sensors Active (ESP32 Gateways)
             </span>
             <span className="flex items-center gap-1">
               <Activity size={12} className="text-signal-blue" /> 99.4% Model Confidence
@@ -54,7 +57,7 @@ export default function CompetitionHeroBar() {
             <span className="flex items-center gap-1">
               <ShieldCheck size={12} className="text-emerald-400" /> Target Cow-024:
               <strong className={targetCow?.riskScore >= 80 ? 'text-signal-red ml-0.5' : 'text-emerald-400 ml-0.5'}>
-                {targetCow?.riskScore || 87}% Risk ({targetCow?.riskLevel?.toUpperCase()})
+                {targetCow?.riskScore || 87}% Risk ({targetCow?.riskLevel?.toUpperCase()} · 48–72h Window)
               </strong>
             </span>
           </div>

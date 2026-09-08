@@ -21,25 +21,25 @@ export const DEVICE_COUNTS = {
 const wearableAnimals = ANIMALS.slice(0, 42)
 export const DEVICES = [
   ...wearableAnimals.map((a, i) => ({
-    id: `COLLAR-${a.id.split('-')[1]}`,
-    type: 'Wearable Collar',
+    id: `ESP32-NODE-${a.id.split('-')[1]}`,
+    type: 'ESP32 Bio-Telemetry Node',
     target: a.id,
     battery: Math.round(40 + rand() * 58),
     connection: rand() > 0.06 ? 'Connected' : 'Weak Signal',
     lastUpdateSec: Math.round(5 + rand() * 90),
   })),
   ...Array.from({ length: 8 }).map((_, i) => ({
-    id: `MILK-SENS-${String(i + 1).padStart(2, '0')}`,
-    type: 'Milk Sensor',
-    target: `Parlour Bay ${i + 1}`,
+    id: `EC-PROBE-${String(i + 1).padStart(2, '0')}`,
+    type: 'In-Line Milk EC Probe',
+    target: `Milking Bay ${i + 1}`,
     battery: Math.round(55 + rand() * 44),
     connection: 'Connected',
     lastUpdateSec: Math.round(5 + rand() * 40),
   })),
   ...Array.from({ length: 6 }).map((_, i) => ({
-    id: `ENV-${String(i + 1).padStart(2, '0')}`,
-    type: 'Environmental Sensor',
-    target: ['Shed A', 'Shed B', 'Milking Parlour', 'Feed Yard', 'Water Trough', 'Bedding Area'][i],
+    id: `THI-ENV-${String(i + 1).padStart(2, '0')}`,
+    type: 'Shed THI Sensor (LoRaWAN)',
+    target: ['Shed A (Main)', 'Shed B (Calving)', 'Milking Parlour', 'Feed Yard', 'Water Trough', 'Bedding Area'][i],
     battery: Math.round(60 + rand() * 39),
     connection: 'Connected',
     lastUpdateSec: Math.round(5 + rand() * 25),
@@ -47,11 +47,12 @@ export const DEVICES = [
 ]
 
 export const LIVE_ENVIRONMENT = {
-  farmTemperature: 28.4,
-  humidity: 71,
-  milkTemperature: 37.1,
-  avgConductivity: 5.2,
-  environmentalRisk: 'Moderate',
+  farmTemperature: 31.4,
+  humidity: 72,
+  milkTemperature: 38.6,
+  avgConductivity: 5.4,
+  thiIndex: 78.4,
+  environmentalRisk: 'Moderate Heat Stress (THI 78.4)',
 }
 
 export const NOTIFICATIONS = [

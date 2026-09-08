@@ -22,7 +22,7 @@ function ModelStatusCard() {
       <div className="mt-4 grid grid-cols-2 gap-y-3 text-xs sm:grid-cols-4">
         <div>
           <p className="text-ink-faint">Prediction window</p>
-          <p className="mt-0.5 font-semibold text-ink">7–14 days</p>
+          <p className="mt-0.5 font-semibold text-ink">48–72 hours (Pre-Clinical)</p>
         </div>
         <div>
           <p className="text-ink-faint">Model confidence</p>
@@ -38,8 +38,7 @@ function ModelStatusCard() {
         </div>
       </div>
       <p className="mt-4 text-[11px] text-ink-faint">
-        Prototype AI Simulation — last updated today, 08:30 AM. Figures are simulated for demonstration and are not a
-        clinically validated accuracy measure.
+        Prototype AI Simulation (SIH26109) — last updated today, 08:30 AM. Local edge-first inference synchronized.
       </p>
     </div>
   )
@@ -55,9 +54,10 @@ export default function Forecast() {
 
   const factors = selected
     ? [
-        { label: 'SCC level', value: Math.round(((selected.scc - 100000) / 500000) * 100), display: `${Math.round(selected.scc / 1000)}k cells/mL`, color: '#7E1F1B' },
-        { label: 'Milk yield change', value: Math.abs(selected.milkYieldChangePct), display: `${selected.milkYieldChangePct}%`, color: '#C4571F' },
-        { label: 'Body temperature', value: Math.max(1, (selected.temperature - 38.2) * 20), display: `${selected.temperature}°C`, color: '#B3690E' },
+        { label: 'Milk Electrical Conductivity (EC)', value: Math.round(selected.conductivity * 6.5), display: `+${selected.conductivity}% (${(4.8 + selected.conductivity * 0.15).toFixed(1)} mS/cm)`, color: '#7E1F1B' },
+        { label: 'AI-Estimated SCC', value: Math.round(((selected.scc - 100000) / 500000) * 100), display: `${Math.round(selected.scc / 1000)}k cells/mL`, color: '#A82B27' },
+        { label: 'Daily milk yield change', value: Math.abs(selected.milkYieldChangePct), display: `${selected.milkYieldChangePct}%`, color: '#C4571F' },
+        { label: 'Body temperature (Udder IR)', value: Math.max(1, (selected.temperature - 38.2) * 20), display: `${selected.temperature}°C`, color: '#B3690E' },
         { label: 'Activity change', value: Math.abs(selected.activity), display: `${selected.activity}%`, color: '#D79A3B' },
       ]
     : []

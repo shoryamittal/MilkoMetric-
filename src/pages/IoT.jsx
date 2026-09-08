@@ -65,10 +65,10 @@ export default function IoT() {
 
       <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-4">
         {[
-          { icon: Wifi, label: 'Animals Connected', value: DEVICE_COUNTS.animalsConnected },
-          { icon: Radio, label: 'Wearable Sensors', value: DEVICE_COUNTS.wearables },
-          { icon: Milk, label: 'Milk Sensors', value: DEVICE_COUNTS.milkSensors },
-          { icon: Thermometer, label: 'Environmental Sensors', value: DEVICE_COUNTS.environmentalSensors },
+          { icon: Wifi, label: 'Animals Monitored', value: DEVICE_COUNTS.animalsConnected },
+          { icon: Radio, label: 'ESP32 Nodes (LoRa/BLE)', value: DEVICE_COUNTS.wearables },
+          { icon: Milk, label: 'In-Line EC Probes', value: DEVICE_COUNTS.milkSensors },
+          { icon: Thermometer, label: 'Shed THI Sensors', value: DEVICE_COUNTS.environmentalSensors },
         ].map((s) => (
           <div key={s.label} className="rounded-lg border border-line bg-canvas-raised p-4 shadow-card">
             <s.icon size={16} className="text-pasture-600" />
@@ -79,11 +79,11 @@ export default function IoT() {
       </div>
 
       <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 lg:grid-cols-5">
-        <LiveCard icon={Thermometer} label="Farm Temperature" value={`${LIVE_ENVIRONMENT.farmTemperature}°C`} />
-        <LiveCard icon={Droplets} label="Humidity" value={`${LIVE_ENVIRONMENT.humidity}%`} />
-        <LiveCard icon={Milk} label="Milk Temperature" value={`${LIVE_ENVIRONMENT.milkTemperature}°C`} />
-        <LiveCard icon={Zap} label="Avg Conductivity" value={`${LIVE_ENVIRONMENT.avgConductivity} mS/cm`} />
-        <LiveCard icon={Wifi} label="Environmental Risk" value={LIVE_ENVIRONMENT.environmentalRisk} tone="moderate" />
+        <LiveCard icon={Thermometer} label="Farm Ambient Temp" value={`${LIVE_ENVIRONMENT.farmTemperature}°C`} />
+        <LiveCard icon={Droplets} label="Relative Humidity" value={`${LIVE_ENVIRONMENT.humidity}%`} />
+        <LiveCard icon={Milk} label="Milk Temp (Probe)" value={`${LIVE_ENVIRONMENT.milkTemperature}°C`} />
+        <LiveCard icon={Zap} label="In-Line EC Avg" value={`${LIVE_ENVIRONMENT.avgConductivity} mS/cm`} />
+        <LiveCard icon={Wifi} label="Shed Heat Stress (THI)" value={`${LIVE_ENVIRONMENT.thiIndex} (Moderate)`} tone="moderate" />
       </div>
 
       <div className="rounded-lg border border-line bg-canvas-raised shadow-card">

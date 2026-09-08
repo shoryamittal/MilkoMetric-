@@ -161,7 +161,7 @@ const demoAnimal = {
   riskScore: 87,
   riskLevel: 'high',
   riskLabel: 'High Risk',
-  predictedWindow: '7–10 days',
+  predictedWindow: '48–72 hours',
   modelConfidence: 91,
 }
 demoAnimal.history = {

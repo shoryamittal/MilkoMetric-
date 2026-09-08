@@ -1,4 +1,4 @@
-﻿import React from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import { PawPrint, AlertTriangle, ShieldAlert, HeartPulse, Gauge, ArrowRight, Activity, Thermometer, Droplet, Clock } from 'lucide-react'
 import { useApp } from '../context/AppContext.jsx'
@@ -11,6 +11,7 @@ import { RiskFactorBars } from '../components/dashboard/RiskFactors.jsx'
 import CompetitionHeroBar from '../components/dashboard/CompetitionHeroBar.jsx'
 import EconomicImpactCard from '../components/dashboard/EconomicImpactCard.jsx'
 import LiveTriageTable from '../components/dashboard/LiveTriageTable.jsx'
+import ShedHeatStressCard from '../components/dashboard/ShedHeatStressCard.jsx'
 
 function greetingWord() {
   const h = new Date().getHours()
@@ -26,12 +27,13 @@ export default function Dashboard() {
     .filter((a) => a.status === 'active' && (a.severity === 'high' || a.severity === 'critical'))
     .slice(0, 3)
 
-  // Dynamic risk factor calculation for COW-024 reflecting live changes
+  // Dynamic risk factor calculation for COW-024 reflecting live changes & hardware EC probe
   const factors = [
-    { label: 'SCC In-Line Elevation', value: Math.round(((demo.scc - 150000) / 150000) * 100), display: `${demo.scc.toLocaleString()} cells/ml`, color: '#7E1F1B' },
-    { label: 'Milk Yield Reduction', value: Math.abs(demo.milkYieldChangePct), display: `${demo.milkYieldChangePct}%`, color: '#C4571F' },
-    { label: 'Udder Thermal Delta', value: Math.round((demo.temperature - 38.4) * 20), display: `+${(demo.temperature - 38.4).toFixed(1)}°C (${demo.temperature}°C)`, color: '#B3690E' },
-    { label: 'Activity Drop (Lethargy)', value: Math.abs(demo.activity), display: `${demo.activity}%`, color: '#D79A3B' },
+    { label: 'Milk Electrical Conductivity (In-Line EC Probe)', value: Math.round(demo.conductivity * 6.5), display: `+${demo.conductivity}% (${(4.8 + demo.conductivity * 0.15).toFixed(1)} mS/cm)`, color: '#7E1F1B' },
+    { label: 'AI-Estimated Somatic Cells (SCC)', value: Math.round(((demo.scc - 150000) / 150000) * 100), display: `${demo.scc.toLocaleString()} cells/ml (Elevated)`, color: '#A82B27' },
+    { label: 'Daily Milk Yield Reduction (Variance)', value: Math.abs(demo.milkYieldChangePct), display: `${demo.milkYieldChangePct}%`, color: '#C4571F' },
+    { label: 'Udder Thermal Delta (IR Sensor)', value: Math.round((demo.temperature - 38.4) * 20), display: `+${(demo.temperature - 38.4).toFixed(1)}°C (${demo.temperature}°C)`, color: '#B3690E' },
+    { label: 'Shed Heat Stress Vulnerability (THI 78.4)', value: 48, display: 'Elevated (Liu et al.)', color: '#D79A3B' },
     { label: 'Rumination Retraction', value: Math.abs(demo.rumination), display: `${demo.rumination}%`, color: '#B7A66B' },
   ]
 
@@ -45,19 +47,24 @@ export default function Dashboard() {
       {/* 1. Championship Live Demo Bar */}
       <CompetitionHeroBar />
 
-      {/* Greeting & Subtitle */}
-      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+      {/* Greeting & Subtitle with Offline Edge Status */}
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-display text-2xl font-semibold text-ink sm:text-[26px]">
             {greetingWord()}, {auth.name || 'Dairy Manager'} 👋
           </h1>
           <p className="mt-0.5 text-sm text-ink-soft">
-            Autonomous herd health diagnostics and pre-symptomatic mastitis detection console.
+            Autonomous herd health diagnostics and pre-symptomatic mastitis detection console (SIH26109).
           </p>
         </div>
-        <div className="flex items-center gap-2 text-xs text-ink-faint">
-          <span className="h-2 w-2 rounded-full bg-pasture-600 animate-ping" />
-          <span>Real-time IoT telemetry synchronized</span>
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-pasture-600/30 bg-pasture-50 px-2.5 py-1 font-semibold text-pasture-800">
+            <span className="h-2 w-2 rounded-full bg-pasture-600 animate-pulseDot" />
+            100% Offline Edge Mode (TinyML On-Device)
+          </span>
+          <span className="hidden items-center gap-1 text-ink-faint sm:inline-flex">
+            · ESP32 Gateways Synced (MQTT 5.0)
+          </span>
         </div>
       </div>
 
@@ -85,7 +92,10 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* 5. Rapid Clinical Triage Queue (Interactive Table) */}
+      {/* 5. Shed Environmental Microclimate & Heat Stress Index (Hardware Telemetry) */}
+      <ShedHeatStressCard />
+
+      {/* 6. Rapid Clinical Triage Queue (Interactive Table) */}
       <LiveTriageTable animals={animals} alerts={alerts} />
 
       {/* 6. Early Warning Cards Grid */}

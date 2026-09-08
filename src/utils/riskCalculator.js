@@ -60,11 +60,11 @@ export function computeRiskScore({
 export function predictedWindowForBand(level) {
   switch (level) {
     case 'critical':
-      return '3–6 days'
+      return '24–48 hours'
     case 'high':
-      return '7–10 days'
+      return '48–72 hours'
     case 'moderate':
-      return '14–18 days'
+      return '3–5 days'
     default:
       return null
   }

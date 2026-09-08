@@ -22,25 +22,29 @@ export default function EarlyWarningCard({ alert, animal }) {
       <p className="mt-2.5 font-display text-[15px] font-semibold text-ink">{animal.id}</p>
       <p className="text-xs text-ink-soft">{animal.breed} · Lactation {animal.lactationNumber}</p>
 
-      <div className="mt-3 grid grid-cols-3 gap-2 rounded-sm bg-canvas-sunken p-2.5 text-center">
+      <div className="mt-3 grid grid-cols-4 gap-1.5 rounded-sm bg-canvas-sunken p-2.5 text-center">
         <div>
-          <p className="text-[10px] uppercase tracking-wide text-ink-faint">SCC</p>
+          <p className="text-[9.5px] uppercase tracking-wide text-ink-faint">Milk EC</p>
+          <p className="text-xs font-semibold text-signal-red">+{animal.conductivity}%</p>
+        </div>
+        <div>
+          <p className="text-[9.5px] uppercase tracking-wide text-ink-faint">Est. SCC</p>
           <p className="text-xs font-semibold text-signal-red">↑ {Math.round(((animal.scc - 150000) / 150000) * 100)}%</p>
         </div>
         <div>
-          <p className="text-[10px] uppercase tracking-wide text-ink-faint">Milk Yield</p>
+          <p className="text-[9.5px] uppercase tracking-wide text-ink-faint">Yield Drop</p>
           <p className="text-xs font-semibold text-signal-red">↓ {Math.abs(animal.milkYieldChangePct)}%</p>
         </div>
         <div>
-          <p className="text-[10px] uppercase tracking-wide text-ink-faint">Activity</p>
-          <p className="text-xs font-semibold text-signal-red">↓ {Math.abs(animal.activity)}%</p>
+          <p className="text-[9.5px] uppercase tracking-wide text-ink-faint">Udder Temp</p>
+          <p className="text-xs font-semibold text-signal-amber">+{Math.max(0, animal.temperature - 38.4).toFixed(1)}°C</p>
         </div>
       </div>
 
       <div className="mt-3 flex items-center justify-between">
         <div>
-          <p className="text-[10px] uppercase tracking-wide text-ink-faint">Predicted onset</p>
-          <p className="text-[13px] font-medium text-ink">{animal.predictedWindow || '—'}</p>
+          <p className="text-[10px] uppercase tracking-wide text-ink-faint">Predicted Subclinical Onset</p>
+          <p className="text-[13px] font-semibold text-pasture-800">{animal.predictedWindow || '48–72 hours'}</p>
         </div>
         <button
           onClick={() => navigate(`/animals/${animal.id}`)}

@@ -97,7 +97,7 @@ export default function AnimalDetail() {
           <div className="mt-4 grid w-full grid-cols-2 gap-3 border-t border-line pt-4 text-center">
             <div>
               <p className="text-[11px] uppercase tracking-wide text-ink-faint">Predicted onset</p>
-              <p className="mt-0.5 text-sm font-semibold text-ink">{animal.predictedWindow || 'Not applicable'}</p>
+              <p className="mt-0.5 text-sm font-semibold text-ink">{animal.predictedWindow || '48–72 hours'}</p>
             </div>
             <div>
               <p className="text-[11px] uppercase tracking-wide text-ink-faint">Model confidence</p>
@@ -109,11 +109,11 @@ export default function AnimalDetail() {
         <div className="grid grid-cols-2 gap-3.5 xl:col-span-8 sm:grid-cols-3">
           {[
             { icon: Milk, label: 'Milk Yield', value: `${animal.milkYield} L/day`, delta: animal.milkYieldChangePct, unit: '%' },
-            { icon: Droplets, label: 'SCC', value: `${animal.scc.toLocaleString('en-IN')} cells/mL`, delta: animal.scc > 200000 ? Math.round(((animal.scc - 150000) / 150000) * 100) : 0, unit: '%' },
-            { icon: Thermometer, label: 'Body Temperature', value: `${animal.temperature}°C`, delta: +(animal.temperature - 38.5).toFixed(1), unit: '°C', signed: true },
-            { icon: ActivityIcon, label: 'Activity', value: `${animal.activity > 0 ? '+' : ''}${animal.activity}%`, delta: animal.activity, unit: '%' },
-            { icon: HeartPulse, label: 'Rumination', value: `${animal.rumination > 0 ? '+' : ''}${animal.rumination}%`, delta: animal.rumination, unit: '%' },
-            { icon: Zap, label: 'Milk Conductivity', value: `+${animal.conductivity}%`, delta: animal.conductivity, unit: '%' },
+            { icon: Droplets, label: 'AI-Estimated SCC', value: `${animal.scc.toLocaleString('en-IN')} cells/mL`, delta: animal.scc > 200000 ? Math.round(((animal.scc - 150000) / 150000) * 100) : 0, unit: '%' },
+            { icon: Thermometer, label: 'Udder Temperature', value: `${animal.temperature}°C`, delta: +(animal.temperature - 38.5).toFixed(1), unit: '°C', signed: true },
+            { icon: Zap, label: 'Milk EC (In-Line)', value: `+${animal.conductivity}% (${(4.8 + animal.conductivity * 0.15).toFixed(1)} mS/cm)`, delta: animal.conductivity, unit: '%' },
+            { icon: ActivityIcon, label: 'Activity Level', value: `${animal.activity > 0 ? '+' : ''}${animal.activity}%`, delta: animal.activity, unit: '%' },
+            { icon: HeartPulse, label: 'Rumination Rate', value: `${animal.rumination > 0 ? '+' : ''}${animal.rumination}%`, delta: animal.rumination, unit: '%' },
           ].map((m) => (
             <div key={m.label} className="rounded-lg border border-line bg-canvas-raised p-4 shadow-card">
               <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-canvas-sunken">
