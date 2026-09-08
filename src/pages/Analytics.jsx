@@ -70,11 +70,12 @@ export default function Analytics() {
   )
 
   const environmental = [
-    { label: 'Temperature', value: '28.4°C', tone: 'moderate' },
-    { label: 'Humidity', value: '71%', tone: 'moderate' },
-    { label: 'Rainfall (7d)', value: '38 mm', tone: 'ok' },
-    { label: 'Bedding Cleanliness', value: '82 / 100', tone: 'ok' },
-    { label: 'Hygiene Score', value: '76 / 100', tone: 'moderate' },
+    { label: 'Shed THI Index', value: '78.4', tone: 'moderate' },
+    { label: 'Avg In-Line EC', value: '5.4 mS/cm', tone: 'moderate' },
+    { label: 'Ambient Temp', value: '31.4°C', tone: 'moderate' },
+    { label: 'Relative Humidity', value: '72%', tone: 'moderate' },
+    { label: 'Bedding Hygiene', value: '82 / 100', tone: 'ok' },
+    { label: 'Shed Fans (HVLS)', value: 'Active', tone: 'ok' },
   ]
 
   return (
@@ -157,8 +158,8 @@ export default function Analytics() {
         </ChartCard>
       </div>
 
-      <ChartCard title="Environmental Risk" subtitle="Farm-level conditions that correlate with mastitis risk">
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+      <ChartCard title="Environmental Heat Stress & Biosecurity" subtitle="Farm-level conditions that correlate with subclinical mastitis vulnerability">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
           {environmental.map((e) => (
             <div key={e.label} className="rounded-md bg-canvas-sunken p-3 text-center">
               <p className="font-display text-lg font-semibold text-ink tabular">{e.value}</p>

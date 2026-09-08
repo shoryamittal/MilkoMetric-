@@ -2,9 +2,11 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ShieldAlert, AlertTriangle, ArrowRight, CheckCircle2, Clock, Siren, Syringe, Eye, Stethoscope } from 'lucide-react'
 import Badge from '../common/Badge.jsx'
+import { useApp } from '../../context/AppContext.jsx'
 
 export default function LiveTriageTable({ animals = [], alerts = [] }) {
   const navigate = useNavigate()
+  const { showToast } = useApp()
   const [filter, setFilter] = useState('high_risk')
   const [actionSuccess, setActionSuccess] = useState({})
 
@@ -25,6 +27,27 @@ export default function LiveTriageTable({ animals = [], alerts = [] }) {
 
   const handleAction = (cowId, actionType) => {
     setActionSuccess((prev) => ({ ...prev, [cowId]: actionType }))
+
+    if (actionType === 'Vet Tele-Alert Sent') {
+      showToast({
+        tone: 'info',
+        title: '🚨 Tele-Veterinarian Dispatched',
+        message: `Clinical dossier for ${cowId} sent to Dr. Patil (SVO, Pune). 48–72h subclinical warning logged.`,
+      })
+    } else if (actionType === 'Quarantine & Teat Dip') {
+      showToast({
+        tone: 'ok',
+        title: '🛡️ Barrier Teat Dip Applied',
+        message: `${cowId} segregated; herbal barrier teat dip protocol logged.`,
+      })
+    } else if (actionType === 'Milk Diverted') {
+      showToast({
+        tone: 'moderate',
+        title: '⚠️ Milking Line Diverted',
+        message: `Milking valve triggered for ${cowId}: Bulk tank contamination averted.`,
+      })
+    }
+
     setTimeout(() => {
       setActionSuccess((prev) => {
         const next = { ...prev }

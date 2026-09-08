@@ -4,9 +4,10 @@ const severityForLevel = (level) => (level === 'critical' ? 'critical' : level =
 
 function reasonFor(animal) {
   const parts = []
-  if (animal.scc > 250000) parts.push(`SCC ${animal.scc > 250000 ? '+' : ''}${Math.round(((animal.scc - 150000) / 150000) * 100)}%`)
+  if (animal.conductivity > 3) parts.push(`Milk EC +${animal.conductivity}%`)
+  if (animal.scc > 250000) parts.push(`Est. SCC ${animal.scc > 250000 ? '+' : ''}${Math.round(((animal.scc - 150000) / 150000) * 100)}%`)
   if (animal.milkYieldChangePct < -3) parts.push(`Milk yield ${animal.milkYieldChangePct}%`)
-  if (animal.temperature > 38.8) parts.push(`Temperature +${(animal.temperature - 38.5).toFixed(1)}°C`)
+  if (animal.temperature > 38.8) parts.push(`Udder Temp +${(animal.temperature - 38.5).toFixed(1)}°C`)
   if (animal.activity < -5) parts.push(`Activity ${animal.activity}%`)
   return parts.slice(0, 3).join(' · ')
 }
