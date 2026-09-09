@@ -27,7 +27,7 @@ function LiveCard({ icon: Icon, label, value, tone = 'default' }) {
 }
 
 export default function IoT() {
-  const { simulationActive, simulateMastitisEvent, resetSimulation } = useApp()
+  const { simulationActive, simulateMastitisEvent, resetSimulation, liveEnvironment } = useApp()
   const [deviceFilter, setDeviceFilter] = useState('all')
 
   const filteredDevices = DEVICES.filter((d) => deviceFilter === 'all' || d.type === deviceFilter)
@@ -79,11 +79,11 @@ export default function IoT() {
       </div>
 
       <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 lg:grid-cols-5">
-        <LiveCard icon={Thermometer} label="Farm Ambient Temp" value={`${LIVE_ENVIRONMENT.farmTemperature}°C`} />
-        <LiveCard icon={Droplets} label="Relative Humidity" value={`${LIVE_ENVIRONMENT.humidity}%`} />
-        <LiveCard icon={Milk} label="Milk Temp (Probe)" value={`${LIVE_ENVIRONMENT.milkTemperature}°C`} />
-        <LiveCard icon={Zap} label="In-Line EC Avg" value={`${LIVE_ENVIRONMENT.avgConductivity} mS/cm`} />
-        <LiveCard icon={Wifi} label="Shed Heat Stress (THI)" value={`${LIVE_ENVIRONMENT.thiIndex} (Moderate)`} tone="moderate" />
+        <LiveCard icon={Thermometer} label="Farm Ambient Temp" value={`${liveEnvironment?.farmTemperature || 31.4}°C`} />
+        <LiveCard icon={Droplets} label="Relative Humidity" value={`${liveEnvironment?.humidity || 72}%`} />
+        <LiveCard icon={Milk} label="Milk Temp (Probe)" value={`${liveEnvironment?.milkTemperature || 38.6}°C`} />
+        <LiveCard icon={Zap} label="In-Line EC Avg" value={`${liveEnvironment?.avgConductivity || 5.4} mS/cm`} />
+        <LiveCard icon={Wifi} label="Shed Heat Stress (THI)" value={`${liveEnvironment?.thiIndex || 78.4} (${(liveEnvironment?.thiIndex || 78.4) > 78 ? 'Moderate' : 'Comfortable'})`} tone={(liveEnvironment?.thiIndex || 78.4) > 78 ? 'moderate' : 'default'} />
       </div>
 
       <div className="rounded-lg border border-line bg-canvas-raised shadow-card">

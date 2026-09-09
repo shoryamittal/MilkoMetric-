@@ -2,7 +2,7 @@ import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { X, LayoutGrid, PawPrint, BellRing, Radar } from 'lucide-react'
 import Logo from '../common/Logo.jsx'
-import { SECTIONS } from './Sidebar.jsx'
+import { SECTIONS } from '../../data/navigation.js'
 import { useApp } from '../../context/AppContext.jsx'
 
 export function MobileDrawer({ open, onClose }) {
@@ -12,8 +12,14 @@ export function MobileDrawer({ open, onClose }) {
     <div className="fixed inset-0 z-40 lg:hidden">
       <div className="absolute inset-0 bg-ink/40" onClick={onClose} />
       <div className="absolute inset-y-0 left-0 flex w-[78%] max-w-xs flex-col bg-ink shadow-pop">
-        <div className="flex h-16 items-center justify-between px-5">
-          <Logo tone="light" />
+        <div className="flex h-18 items-center justify-between px-4 pt-3 pb-2">
+          <div className="flex items-center justify-center rounded-xl bg-white px-3 py-1.5 shadow-sm border border-white/20">
+            <img
+              src="/agrinex-logo.png"
+              alt="AgriNex AI"
+              className="h-8 w-auto max-w-[135px] object-contain"
+            />
+          </div>
           <button onClick={onClose} className="rounded-sm p-1.5 text-white/70 hover:bg-white/10" aria-label="Close menu">
             <X size={20} />
           </button>

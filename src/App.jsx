@@ -13,13 +13,21 @@ import IoT from './pages/IoT.jsx'
 import MapPage from './pages/MapPage.jsx'
 import Settings from './pages/Settings.jsx'
 import NotFound from './pages/NotFound.jsx'
+import { useApp } from './context/AppContext.jsx'
+import { getStoredAuth } from './utils/authStorage.js'
+
+function RootRedirect() {
+  const { auth } = useApp()
+  const isAuthed = auth.isLoggedIn || !!getStoredAuth()?.isLoggedIn
+  return <Navigate to={isAuthed ? '/dashboard' : '/login'} replace />
+}
 
 export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route path="/" element={<RootRedirect />} />
       <Route element={<AppLayout />}>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/animals" element={<Animals />} />
         <Route path="/animals/:id" element={<AnimalDetail />} />

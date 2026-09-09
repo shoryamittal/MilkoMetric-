@@ -4,7 +4,10 @@ import Sidebar from './Sidebar.jsx'
 import Header from './Header.jsx'
 import BottomNav, { MobileDrawer } from './MobileNav.jsx'
 import ToastHost from '../common/ToastHost.jsx'
+import Chatbot from '../chatbot/Chatbot.jsx'
+import ErrorBoundary from '../common/ErrorBoundary.jsx'
 import { useApp } from '../../context/AppContext.jsx'
+import { getStoredAuth } from '../../utils/authStorage.js'
 
 const TITLES = {
   '/animals': ['Animal Health Monitoring', 'Monitor individual animal health and mastitis risk.'],
@@ -22,7 +25,10 @@ export default function AppLayout() {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const location = useLocation()
 
-  if (!auth.isLoggedIn) return <Navigate to="/login" replace />
+  // Check both context auth and synchronous storage to eliminate redirect bouncing during state propagation
+  const isAuthed = auth.isLoggedIn || !!getStoredAuth()?.isLoggedIn
+
+  if (!isAuthed) return <Navigate to="/login" replace />
 
   const match = Object.keys(TITLES).find((k) => location.pathname === k)
   const [title, subtitle] = match ? TITLES[match] : [null, null]
@@ -34,11 +40,14 @@ export default function AppLayout() {
       <div className="lg:pl-[236px]">
         <Header onOpenMobileNav={() => setDrawerOpen(true)} title={title} subtitle={subtitle} />
         <main className="mx-auto max-w-[1400px] px-4 pb-20 pt-5 sm:px-6 sm:pb-8 lg:px-8">
-          <Outlet />
+          <ErrorBoundary>
+            <Outlet />
+          </ErrorBoundary>
         </main>
       </div>
       <BottomNav />
       <ToastHost />
+      <Chatbot />
     </div>
   )
 }

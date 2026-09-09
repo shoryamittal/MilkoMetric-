@@ -1,11 +1,12 @@
-﻿import React from 'react'
+import React from 'react'
 import { ThermometerSun, Droplets, Wind, AlertTriangle, ShieldCheck, Cpu, Info } from 'lucide-react'
+import { useApp } from '../../context/AppContext.jsx'
 
 export default function ShedHeatStressCard() {
-  // Real-time THI calculation: THI = 0.8 * T + (RH/100) * (T - 14.4) + 46.4
-  const ambientTemp = 31.4
-  const humidity = 72
-  const thi = Math.round((0.8 * ambientTemp + (humidity / 100) * (ambientTemp - 14.4) + 46.4) * 10) / 10
+  const { liveEnvironment } = useApp()
+  const ambientTemp = liveEnvironment?.farmTemperature || 31.4
+  const humidity = liveEnvironment?.humidity || 72
+  const thi = liveEnvironment?.thiIndex || (Math.round((0.8 * ambientTemp + (humidity / 100) * (ambientTemp - 14.4) + 46.4) * 10) / 10)
 
   return (
     <div className="rounded-lg border border-line bg-canvas-raised p-5 shadow-card">
