@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { Bell, ChevronDown, Globe, Menu, MapPin, Wifi, WifiOff, RefreshCw, LogOut, User } from 'lucide-react'
 import { useApp } from '../../context/AppContext.jsx'
 import { LANGUAGES } from '../../utils/translations.js'
@@ -64,9 +64,14 @@ export default function Header({ onOpenMobileNav, title, subtitle }) {
 
         {/* Section Adaptive Logo in Header */}
         <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
-          <div className="shrink-0">
+          <Link
+            to="/dashboard"
+            title="Return to Dashboard Home"
+            className="shrink-0 cursor-pointer transition-transform hover:scale-105 active:scale-95"
+            aria-label="Return to Dashboard Home"
+          >
             <Logo size={28} withWordmark={false} showSectionBadge={false} />
-          </div>
+          </Link>
           <div className="min-w-0 flex-1">
             {title ? (
               <>

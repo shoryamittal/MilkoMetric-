@@ -1,5 +1,5 @@
-﻿import React from 'react'
-import { useLocation } from 'react-router-dom'
+import React from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import {
   HeartPulse,
   Shield,
@@ -32,6 +32,7 @@ export default function Logo({
   tone = 'default',
   showSectionBadge = true,
   useGraphic = false,
+  to = null,
   className = '',
 }) {
   let pathname = '/dashboard'
@@ -50,8 +51,10 @@ export default function Logo({
   const SectionIcon = activeSection.icon
   const dark = tone === 'light'
 
+  let content = null
+
   if (useGraphic) {
-    return (
+    content = (
       <div className={`flex items-center gap-3 ${className}`}>
         <img
           src="/agrinex-logo.png"
@@ -70,41 +73,56 @@ export default function Logo({
         )}
       </div>
     )
+  } else {
+    content = (
+      <div className={`flex items-center gap-2.5 ${className}`}>
+        {/* Dynamic Section-Adaptive Icon Mark */}
+        <div
+          className="relative flex items-center justify-center rounded-lg transition-transform duration-300 hover:scale-105"
+          style={{
+            width: size + 8,
+            height: size + 8,
+            backgroundColor: dark ? '#1E2922' : activeSection.bg,
+            border: `1.5px solid ${dark ? 'rgba(255,255,255,0.15)' : activeSection.color + '40'}`,
+          }}
+        >
+          <SectionIcon
+            size={Math.max(16, size - 10)}
+            style={{ color: dark ? '#86EFAC' : activeSection.color }}
+            strokeWidth={2.2}
+          />
+        </div>
+
+        {withWordmark && (
+          <div className="flex flex-col leading-none">
+            <div className="flex items-center gap-1.5">
+              <span className={`font-display text-[17px] font-bold tracking-tight ${dark ? 'text-white' : 'text-ink'}`}>
+                AgriNex <span className={dark ? 'text-pasture-400 font-semibold' : 'text-pasture-700 font-semibold'}>AI</span>
+              </span>
+            </div>
+            {showSectionBadge && (
+              <span className="text-[10px] font-medium tracking-wide uppercase mt-0.5 text-ink-faint">
+                {activeSection.label} Mode
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+    )
   }
 
-  return (
-    <div className={`flex items-center gap-2.5 ${className}`}>
-      {/* Dynamic Section-Adaptive Icon Mark */}
-      <div
-        className="relative flex items-center justify-center rounded-lg transition-transform duration-300 hover:scale-105"
-        style={{
-          width: size + 8,
-          height: size + 8,
-          backgroundColor: dark ? '#1E2922' : activeSection.bg,
-          border: `1.5px solid ${dark ? 'rgba(255,255,255,0.15)' : activeSection.color + '40'}`,
-        }}
+  if (to) {
+    return (
+      <Link
+        to={to}
+        title="Return to Dashboard Home"
+        aria-label="Return to Dashboard Home"
+        className="inline-flex cursor-pointer transition-transform hover:scale-[1.02] active:scale-98"
       >
-        <SectionIcon
-          size={Math.max(16, size - 10)}
-          style={{ color: dark ? '#86EFAC' : activeSection.color }}
-          strokeWidth={2.2}
-        />
-      </div>
+        {content}
+      </Link>
+    )
+  }
 
-      {withWordmark && (
-        <div className="flex flex-col leading-none">
-          <div className="flex items-center gap-1.5">
-            <span className={`font-display text-[17px] font-bold tracking-tight ${dark ? 'text-white' : 'text-ink'}`}>
-              AgriNex <span className={dark ? 'text-pasture-400 font-semibold' : 'text-pasture-700 font-semibold'}>AI</span>
-            </span>
-          </div>
-          {showSectionBadge && (
-            <span className="text-[10px] font-medium tracking-wide uppercase mt-0.5 text-ink-faint">
-              {activeSection.label} Mode
-            </span>
-          )}
-        </div>
-      )}
-    </div>
-  )
+  return content
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Activity, ShieldCheck, Sparkles, Cpu, Clock, Users, ArrowRight, Loader2 } from 'lucide-react'
 import { useApp } from '../context/AppContext.jsx'
@@ -57,13 +57,18 @@ export default function Login() {
 
         {/* Official Graphic Logo Treatment */}
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <div className="rounded-xl bg-white/95 p-3.5 backdrop-blur shadow-pop w-fit">
+          <Link
+            to="/dashboard"
+            title="Return to Dashboard Home"
+            className="block rounded-xl bg-white/95 p-3.5 backdrop-blur shadow-pop w-fit transition-transform hover:scale-105 active:scale-95 cursor-pointer"
+            aria-label="Return to Dashboard Home"
+          >
             <img
               src="/agrinex-logo.png"
               alt="AgriNex AI - Smart Farming · Healthier Livestock · Better Tomorrow"
               className="h-16 w-auto object-contain"
             />
-          </div>
+          </Link>
         </motion.div>
 
         {/* Pitch content */}
@@ -113,11 +118,18 @@ export default function Login() {
         <div className="mx-auto w-full max-w-md">
           {/* Mobile logo view */}
           <div className="mb-6 flex justify-center lg:hidden">
-            <img
-              src="/agrinex-logo.png"
-              alt="AgriNex AI"
-              className="h-16 w-auto object-contain rounded-lg bg-white p-2 shadow-sm"
-            />
+            <Link
+              to="/dashboard"
+              title="Return to Dashboard Home"
+              className="inline-block transition-transform hover:scale-105 active:scale-95 cursor-pointer"
+              aria-label="Return to Dashboard Home"
+            >
+              <img
+                src="/agrinex-logo.png"
+                alt="AgriNex AI"
+                className="h-16 w-auto object-contain rounded-lg bg-white p-2 shadow-sm"
+              />
+            </Link>
           </div>
 
           {/* Prototype Caption Pill */}

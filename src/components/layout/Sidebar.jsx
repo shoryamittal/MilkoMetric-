@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, Link } from 'react-router-dom'
 import {
   LayoutGrid, PawPrint, Radar, BellRing, Wifi, Map, BarChart3, ClipboardList, Settings, MapPin, ChevronsUpDown,
 } from 'lucide-react'
@@ -34,13 +34,18 @@ export default function Sidebar() {
     <aside className="fixed inset-y-0 left-0 z-30 hidden w-[236px] flex-col bg-ink lg:flex">
       {/* Official Graphic Logo in Sidebar Header */}
       <div className="flex h-18 items-center px-4 pt-3.5 pb-2">
-        <div className="flex items-center justify-center rounded-xl bg-white px-3 py-1.5 shadow-sm border border-white/20 w-full transition-transform hover:scale-[1.02]">
+        <Link
+          to="/dashboard"
+          title="Return to Dashboard Home"
+          className="flex items-center justify-center rounded-xl bg-white px-3 py-1.5 shadow-sm border border-white/20 w-full transition-transform hover:scale-[1.02] active:scale-98 cursor-pointer"
+          aria-label="Return to Dashboard Home"
+        >
           <img
             src="/agrinex-logo.png"
             alt="AgriNex AI - Smart Farming · Healthier Livestock"
             className="h-8.5 w-auto max-w-[155px] object-contain"
           />
-        </div>
+        </Link>
       </div>
 
       <nav className="flex-1 space-y-6 overflow-y-auto px-3 pb-4 pt-2 no-scrollbar">

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, Link } from 'react-router-dom'
 import { X, LayoutGrid, PawPrint, BellRing, Radar, MapPin, ChevronsUpDown } from 'lucide-react'
 import Logo from '../common/Logo.jsx'
 import { SECTIONS } from '../../data/navigation.js'
@@ -16,13 +16,19 @@ export function MobileDrawer({ open, onClose }) {
       <div className="absolute inset-0 bg-ink/50 backdrop-blur-xs" onClick={onClose} />
       <div className="absolute inset-y-0 left-0 flex w-[82%] max-w-xs flex-col bg-ink shadow-2xl">
         <div className="flex h-18 items-center justify-between px-4 pt-3 pb-2 border-b border-white/10">
-          <div className="flex items-center justify-center rounded-xl bg-white px-3 py-1.5 shadow-sm border border-white/20">
+          <Link
+            to="/dashboard"
+            onClick={onClose}
+            title="Return to Dashboard Home"
+            className="flex items-center justify-center rounded-xl bg-white px-3 py-1.5 shadow-sm border border-white/20 transition-transform active:scale-95 cursor-pointer"
+            aria-label="Return to Dashboard Home"
+          >
             <img
               src="/agrinex-logo.png"
               alt="AgriNex AI"
               className="h-8 w-auto max-w-[135px] object-contain"
             />
-          </div>
+          </Link>
           <button onClick={onClose} className="rounded-md p-1.5 text-white/70 hover:bg-white/10 active:scale-95" aria-label="Close menu">
             <X size={20} />
           </button>
