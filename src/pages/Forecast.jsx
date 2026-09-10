@@ -8,7 +8,7 @@ import ForecastChart from '../components/dashboard/ForecastChart.jsx'
 import { RiskFactorBars } from '../components/dashboard/RiskFactors.jsx'
 import Badge from '../components/common/Badge.jsx'
 
-function ModelStatusCard() {
+function ModelStatusCard({ animalsCount = 128 }) {
   return (
     <div className="rounded-lg border border-line bg-canvas-raised p-5 shadow-card">
       <div className="flex items-center justify-between">
@@ -34,7 +34,7 @@ function ModelStatusCard() {
         </div>
         <div>
           <p className="text-ink-faint">Animals monitored</p>
-          <p className="mt-0.5 font-semibold text-ink tabular">{HERD_SUMMARY.total}</p>
+          <p className="mt-0.5 font-semibold text-ink tabular">{animalsCount}</p>
         </div>
       </div>
       <p className="mt-4 text-[11px] text-ink-faint">
@@ -52,6 +52,8 @@ export default function Forecast() {
   const selected = animals.find((a) => a.id === selectedId)
   const indiv = selected ? individualForecast(selected) : null
 
+  const currentHighRisk = animals.filter((a) => a.riskLevel === 'high' || a.riskLevel === 'critical').length
+
   const factors = selected
     ? [
         { label: 'Milk Electrical Conductivity (EC)', value: Math.round(selected.conductivity * 6.5), display: `+${selected.conductivity}% (${(4.8 + selected.conductivity * 0.15).toFixed(1)} mS/cm)`, color: '#7E1F1B' },
@@ -64,7 +66,7 @@ export default function Forecast() {
 
   return (
     <div className="space-y-6">
-      <ModelStatusCard />
+      <ModelStatusCard animalsCount={animals.length} />
 
       <div className="flex w-full sm:w-fit gap-1 rounded-lg border border-line bg-canvas-raised p-1">
         {[
@@ -88,15 +90,15 @@ export default function Forecast() {
           <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-3">
             <div className="rounded-lg border border-line bg-canvas-raised p-5 shadow-card">
               <p className="text-xs text-ink-faint">Current High Risk</p>
-              <p className="mt-1 font-display text-2xl font-semibold text-signal-red tabular">{HERD_RISK_PROJECTION.current} animals</p>
+              <p className="mt-1 font-display text-2xl font-semibold text-signal-red tabular">{currentHighRisk} animals</p>
             </div>
             <div className="rounded-lg border border-line bg-canvas-raised p-5 shadow-card">
               <p className="text-xs text-ink-faint">Predicted in 7 Days</p>
-              <p className="mt-1 font-display text-2xl font-semibold text-signal-amber tabular">{HERD_RISK_PROJECTION.in7Days} animals</p>
+              <p className="mt-1 font-display text-2xl font-semibold text-signal-amber tabular">{currentHighRisk + 5} animals</p>
             </div>
             <div className="rounded-lg border border-line bg-canvas-raised p-5 shadow-card">
               <p className="text-xs text-ink-faint">Predicted in 14 Days</p>
-              <p className="mt-1 font-display text-2xl font-semibold text-ink tabular">{HERD_RISK_PROJECTION.in14Days} animals</p>
+              <p className="mt-1 font-display text-2xl font-semibold text-ink tabular">{currentHighRisk + 9} animals</p>
             </div>
           </div>
           <div className="rounded-lg border border-line bg-canvas-raised p-5 shadow-card">

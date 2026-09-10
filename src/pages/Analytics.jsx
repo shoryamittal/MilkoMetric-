@@ -16,7 +16,7 @@ function ChartCard({ title, subtitle, children, className = '' }) {
 }
 
 export default function Analytics() {
-  const { animals } = useApp()
+  const { animals, liveEnvironment } = useApp()
 
   const riskTrend = useMemo(() => {
     const points = []
@@ -70,12 +70,12 @@ export default function Analytics() {
   )
 
   const environmental = [
-    { label: 'Shed THI Index', value: '78.4', tone: 'moderate' },
-    { label: 'Avg In-Line EC', value: '5.4 mS/cm', tone: 'moderate' },
-    { label: 'Ambient Temp', value: '31.4°C', tone: 'moderate' },
-    { label: 'Relative Humidity', value: '72%', tone: 'moderate' },
+    { label: 'Shed THI Index', value: `${liveEnvironment?.thiIndex || 78.4}`, tone: (liveEnvironment?.thiIndex || 78.4) > 78 ? 'moderate' : 'ok' },
+    { label: 'Avg In-Line EC', value: `${liveEnvironment?.avgConductivity || 5.4} mS/cm`, tone: 'moderate' },
+    { label: 'Ambient Temp', value: `${liveEnvironment?.farmTemperature || 31.4}°C`, tone: 'moderate' },
+    { label: 'Relative Humidity', value: `${liveEnvironment?.humidity || 72}%`, tone: 'moderate' },
     { label: 'Bedding Hygiene', value: '82 / 100', tone: 'ok' },
-    { label: 'Shed Fans (HVLS)', value: 'Active', tone: 'ok' },
+    { label: 'Shed Fans (HVLS)', value: (liveEnvironment?.thiIndex || 78.4) > 75 ? 'Active (Auto)' : 'Standby', tone: 'ok' },
   ]
 
   return (
