@@ -123,20 +123,21 @@ export default function Dashboard() {
         </div>
 
         {/* Real-time Connectivity & Sync Status Strip (Requirement 5 & 13) */}
-        <div className="flex flex-wrap items-center gap-2 text-xs">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs">
           {/* Refresh Telemetry Button */}
           <button
             onClick={refreshTelemetry}
             title="Refresh real-time telemetry (temperatures, THI, milk EC, and ESP32 nodes)"
-            className="inline-flex items-center gap-1.5 rounded-full border border-line bg-canvas-raised px-3 py-1 font-semibold text-ink shadow-sm hover:bg-canvas-sunken hover:border-pasture-500 transition-all active:scale-95"
+            className="inline-flex items-center gap-1.5 rounded-full border border-line bg-canvas-raised px-2.5 sm:px-3 py-1 font-semibold text-ink shadow-sm hover:bg-canvas-sunken hover:border-pasture-500 transition-all active:scale-95 text-[11px] sm:text-xs"
           >
-            <RefreshCw size={13} className="text-pasture-700" />
-            <span>Refresh Live Telemetry</span>
+            <RefreshCw size={12} className="text-pasture-700" />
+            <span className="sm:hidden">Refresh</span>
+            <span className="hidden sm:inline">Refresh Live Telemetry</span>
           </button>
 
           <button
             onClick={toggleNetworkStatus}
-            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-semibold transition-all shadow-sm ${
+            className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 sm:px-3 py-1 font-semibold transition-all shadow-sm text-[11px] sm:text-xs ${
               networkStatus === 'online'
                 ? 'border-pasture-500/30 bg-pasture-50 text-pasture-800 hover:bg-pasture-100'
                 : networkStatus === 'offline'
@@ -147,23 +148,25 @@ export default function Dashboard() {
             {networkStatus === 'online' ? (
               <>
                 <span className="h-2 w-2 rounded-full bg-pasture-600 animate-pulseDot" />
-                <span>100% Offline Edge Ready · Online</span>
+                <span className="sm:hidden">Online</span>
+                <span className="hidden sm:inline">100% Offline Edge Ready · Online</span>
               </>
             ) : networkStatus === 'offline' ? (
               <>
-                <WifiOff size={13} />
-                <span>Offline Edge Mode (Local Buffering)</span>
+                <WifiOff size={12} />
+                <span className="sm:hidden">Offline Edge</span>
+                <span className="hidden sm:inline">Offline Edge Mode (Local Buffering)</span>
               </>
             ) : (
               <>
-                <RefreshCw size={13} className="animate-spin" />
-                <span>Syncing Store-and-Forward...</span>
+                <RefreshCw size={12} className="animate-spin" />
+                <span>Syncing...</span>
               </>
             )}
           </button>
 
-          <span className="rounded-full bg-canvas-sunken px-2.5 py-1 text-[11px] text-ink-soft border border-line">
-            Last sync: <strong>{lastSyncTime}</strong> · {pendingRecords} pending
+          <span className="rounded-full bg-canvas-sunken px-2 sm:px-2.5 py-1 text-[10.5px] sm:text-[11px] text-ink-soft border border-line">
+            <span className="hidden sm:inline">Last sync: </span><strong>{lastSyncTime}</strong>
           </span>
         </div>
       </div>

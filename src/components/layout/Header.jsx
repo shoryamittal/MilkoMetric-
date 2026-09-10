@@ -86,12 +86,12 @@ export default function Header({ onOpenMobileNav, title, subtitle }) {
       </div>
 
       {/* Right side controls: Refresh + Offline Sync + Language + Notifications + User Avatar */}
-      <div className="flex items-center gap-2 sm:gap-2.5">
+      <div className="flex shrink-0 items-center gap-1.5 sm:gap-2.5">
         {/* Real-time Telemetry Refresh Button */}
         <button
           onClick={handleRefresh}
           title="Refresh real-time telemetry (temperatures, THI, milk EC, and ESP32 nodes)"
-          className={`flex items-center gap-1.5 rounded-full border border-line bg-canvas px-2.5 py-1 text-xs font-semibold text-ink shadow-sm hover:bg-canvas-sunken hover:border-pasture-500 transition-all ${
+          className={`flex h-8 w-8 sm:h-auto sm:w-auto items-center justify-center gap-1.5 rounded-full border border-line bg-canvas sm:px-2.5 sm:py-1 text-xs font-semibold text-ink shadow-sm hover:bg-canvas-sunken hover:border-pasture-500 transition-all active:scale-95 ${
             refreshing ? 'opacity-70 pointer-events-none' : ''
           }`}
         >
@@ -105,7 +105,7 @@ export default function Header({ onOpenMobileNav, title, subtitle }) {
         <button
           onClick={toggleNetworkStatus}
           title="Click to simulate Online / Offline transition & Edge Store-and-Forward sync"
-          className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-all ${
+          className={`flex items-center gap-1.5 rounded-full px-2 py-1 sm:px-2.5 text-xs font-medium transition-all ${
             networkStatus === 'online'
               ? 'border border-pasture-500/30 bg-pasture-50 text-pasture-800 hover:bg-pasture-100'
               : networkStatus === 'offline'
@@ -117,16 +117,16 @@ export default function Header({ onOpenMobileNav, title, subtitle }) {
             <>
               <span className="h-2 w-2 rounded-full bg-pasture-600 animate-pulse" />
               <span className="hidden sm:inline">Online</span>
-              <span className="text-[10px] opacity-75">· {lastSyncTime}</span>
+              <span className="hidden md:inline text-[10px] opacity-75">· {lastSyncTime}</span>
             </>
           )}
           {networkStatus === 'offline' && (
             <>
               <WifiOff size={12} className="text-signal-amber" />
-              <span>Offline Edge</span>
+              <span className="hidden sm:inline">Offline Edge</span>
               {pendingRecords > 0 && (
                 <span className="rounded bg-signal-amber px-1 text-[9.5px] font-bold text-white">
-                  {pendingRecords} queued
+                  {pendingRecords}
                 </span>
               )}
             </>
@@ -134,7 +134,7 @@ export default function Header({ onOpenMobileNav, title, subtitle }) {
           {networkStatus === 'syncing' && (
             <>
               <RefreshCw size={12} className="animate-spin text-signal-blue" />
-              <span>Syncing...</span>
+              <span className="hidden sm:inline">Syncing...</span>
             </>
           )}
         </button>
@@ -147,15 +147,15 @@ export default function Header({ onOpenMobileNav, title, subtitle }) {
               setNotifOpen(false)
               setProfileOpen(false)
             }}
-            className="flex items-center gap-1.5 rounded-md border border-line bg-canvas-raised px-2.5 py-1.5 text-xs font-semibold text-ink hover:bg-canvas-sunken"
+            className="flex items-center gap-1 rounded-md border border-line bg-canvas-raised px-2 py-1.5 sm:px-2.5 text-xs font-semibold text-ink hover:bg-canvas-sunken"
             aria-label="Change language"
           >
-            <Globe size={14} className="text-pasture-700" />
-            <span className="uppercase">{language}</span>
-            <ChevronDown size={12} className="text-ink-faint" />
+            <Globe size={13} className="text-pasture-700" />
+            <span className="uppercase text-[11px] sm:text-xs">{language}</span>
+            <ChevronDown size={11} className="hidden sm:inline text-ink-faint" />
           </button>
           {langOpen && (
-            <div className="absolute right-0 top-11 z-30 w-36 overflow-hidden rounded-md border border-line bg-canvas-raised py-1 shadow-pop">
+            <div className="fixed inset-x-4 top-16 z-50 sm:absolute sm:inset-auto sm:right-0 sm:top-11 sm:w-36 overflow-hidden rounded-md border border-line bg-canvas-raised py-1 shadow-2xl">
               {LANGUAGES.map((l) => (
                 <button
                   key={l.code}
@@ -163,7 +163,7 @@ export default function Header({ onOpenMobileNav, title, subtitle }) {
                     setLanguage(l.code)
                     setLangOpen(false)
                   }}
-                  className={`flex w-full items-center justify-between px-3 py-1.5 text-left text-sm hover:bg-canvas-sunken ${
+                  className={`flex w-full items-center justify-between px-3 py-2 sm:py-1.5 text-left text-sm hover:bg-canvas-sunken ${
                     language === l.code ? 'font-semibold text-pasture-700' : 'text-ink'
                   }`}
                 >
@@ -184,18 +184,18 @@ export default function Header({ onOpenMobileNav, title, subtitle }) {
               setProfileOpen(false)
               if (!notifOpen) markNotificationsRead()
             }}
-            className="relative rounded-md p-2 text-ink-soft hover:bg-canvas-sunken"
+            className="relative rounded-md p-1.5 sm:p-2 text-ink-soft hover:bg-canvas-sunken"
             aria-label="Notifications"
           >
             <Bell size={18} />
             {unread > 0 && (
-              <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-signal-red text-[9px] font-bold text-white">
+              <span className="absolute right-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-signal-red text-[9px] font-bold text-white">
                 {unread}
               </span>
             )}
           </button>
           {notifOpen && (
-            <div className="absolute right-0 top-11 z-30 w-80 max-w-[90vw] overflow-hidden rounded-md border border-line bg-canvas-raised shadow-pop">
+            <div className="fixed inset-x-3 top-16 z-50 sm:absolute sm:inset-auto sm:right-0 sm:top-11 sm:w-80 overflow-hidden rounded-md border border-line bg-canvas-raised shadow-2xl">
               <div className="border-b border-line px-3.5 py-2.5 text-sm font-semibold text-ink">
                 Notifications
               </div>
@@ -234,7 +234,7 @@ export default function Header({ onOpenMobileNav, title, subtitle }) {
           </button>
 
           {profileOpen && (
-            <div className="absolute right-0 top-11 z-30 w-52 overflow-hidden rounded-md border border-line bg-canvas-raised py-1.5 shadow-pop">
+            <div className="fixed inset-x-4 top-16 z-50 sm:absolute sm:inset-auto sm:right-0 sm:top-11 sm:w-52 overflow-hidden rounded-md border border-line bg-canvas-raised py-1.5 shadow-2xl">
               <div className="border-b border-line px-3.5 py-2">
                 <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-faint">Signed in as</p>
                 <p className="font-display text-sm font-bold text-ink truncate">{auth.name || 'Guest'}</p>

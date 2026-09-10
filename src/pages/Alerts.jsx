@@ -24,13 +24,13 @@ export default function Alerts() {
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-wrap gap-1.5 rounded-sm border border-line bg-canvas-raised p-1 w-fit">
+      <div className="flex max-w-full overflow-x-auto no-scrollbar gap-1 rounded-lg border border-line bg-canvas-raised p-1 w-full sm:w-fit">
         {TABS.map((tItem) => (
           <button
             key={tItem.key}
             onClick={() => setTab(tItem.key)}
-            className={`rounded-sm px-3.5 py-2 text-[13px] font-medium transition-colors ${
-              tab === tItem.key ? 'bg-pasture-700 text-white' : 'text-ink-soft hover:bg-canvas-sunken'
+            className={`shrink-0 whitespace-nowrap rounded-md px-3.5 py-1.5 text-xs sm:text-[13px] font-medium transition-colors ${
+              tab === tItem.key ? 'bg-pasture-700 text-white font-semibold shadow-sm' : 'text-ink-soft hover:bg-canvas-sunken'
             }`}
           >
             {tItem.label}

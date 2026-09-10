@@ -115,7 +115,7 @@ export default function Settings() {
       </SectionCard>
 
       <div className="flex justify-end">
-        <button type="submit" className="rounded-sm bg-pasture-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-pasture-600">
+        <button type="submit" className="w-full sm:w-auto rounded-md bg-pasture-700 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-pasture-600 transition-all text-center">
           Save Changes
         </button>
       </div>

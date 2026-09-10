@@ -229,7 +229,7 @@ export default function Chatbot() {
         whileTap={{ scale: 0.94 }}
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Open AgriNex AI Assistant"
-        className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-pasture-700 text-white shadow-pop transition-all hover:bg-pasture-800 focus:outline-none focus:ring-4 focus:ring-pasture-500/30 sm:bottom-6 sm:right-6 sm:h-16 sm:w-16 cursor-pointer"
+        className="fixed bottom-[70px] right-3.5 z-40 flex h-13 w-13 items-center justify-center rounded-full bg-pasture-700 text-white shadow-pop transition-all hover:bg-pasture-800 focus:outline-none focus:ring-4 focus:ring-pasture-500/30 sm:bottom-6 sm:right-6 sm:h-16 sm:w-16 sm:z-50 cursor-pointer"
       >
         <AnimatePresence mode="wait">
           {isOpen ? (
@@ -240,7 +240,7 @@ export default function Chatbot() {
               exit={{ rotate: 90, opacity: 0 }}
               transition={{ duration: 0.15 }}
             >
-              <X size={24} />
+              <X size={22} />
             </motion.div>
           ) : (
             <motion.div
@@ -250,7 +250,8 @@ export default function Chatbot() {
               exit={{ scale: 0.6, opacity: 0 }}
               className="relative flex items-center justify-center"
             >
-              <Sparkles size={26} className="text-white drop-shadow" />
+              <Sparkles size={24} className="text-white drop-shadow sm:hidden" />
+              <Sparkles size={26} className="text-white drop-shadow hidden sm:block" />
               <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5 items-center justify-center">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-signal-amber opacity-75" />
                 <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-signal-amber" />
@@ -268,7 +269,7 @@ export default function Chatbot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 25, scale: 0.96 }}
             transition={{ duration: 0.18, ease: 'easeOut' }}
-            className="fixed bottom-20 right-3 sm:right-6 sm:bottom-24 z-50 flex h-[580px] max-h-[80vh] w-[95vw] sm:w-[420px] flex-col overflow-hidden rounded-2xl border border-line bg-canvas-raised shadow-2xl"
+            className="fixed inset-x-2 bottom-[68px] sm:inset-auto sm:right-6 sm:bottom-24 z-50 flex h-[580px] max-h-[calc(100vh-84px)] w-auto sm:w-[420px] flex-col overflow-hidden rounded-2xl border border-line bg-canvas-raised shadow-2xl"
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-line bg-gradient-to-r from-ink via-[#17251C] to-ink px-4 py-3 text-white">

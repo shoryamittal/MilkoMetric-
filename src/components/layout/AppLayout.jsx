@@ -39,7 +39,7 @@ export default function AppLayout() {
       <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
       <div className="lg:pl-[236px]">
         <Header onOpenMobileNav={() => setDrawerOpen(true)} title={title} subtitle={subtitle} />
-        <main className="mx-auto max-w-[1400px] px-4 pb-20 pt-5 sm:px-6 sm:pb-8 lg:px-8">
+        <main className="mx-auto max-w-[1400px] px-3.5 pb-28 pt-4 sm:px-6 sm:pb-8 sm:pt-5 lg:px-8">
           <ErrorBoundary>
             <Outlet />
           </ErrorBoundary>

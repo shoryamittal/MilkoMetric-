@@ -72,11 +72,11 @@ export default function LiveTriageTable({ animals = [], alerts = [] }) {
           </p>
         </div>
 
-        {/* Filter tabs */}
-        <div className="flex items-center rounded-md border border-line bg-canvas p-0.5 text-xs font-medium text-ink-soft">
+        {/* Filter tabs with horizontal scroll on phone */}
+        <div className="flex items-center rounded-md border border-line bg-canvas p-0.5 text-xs font-medium text-ink-soft overflow-x-auto no-scrollbar flex-nowrap w-full sm:w-auto">
           <button
             onClick={() => setFilter('high_risk')}
-            className={`rounded px-2.5 py-1 transition-colors ${
+            className={`shrink-0 rounded px-2.5 py-1 transition-colors ${
               filter === 'high_risk' ? 'bg-white font-semibold text-ink shadow-sm' : 'hover:text-ink'
             }`}
           >
@@ -84,7 +84,7 @@ export default function LiveTriageTable({ animals = [], alerts = [] }) {
           </button>
           <button
             onClick={() => setFilter('critical')}
-            className={`rounded px-2.5 py-1 transition-colors ${
+            className={`shrink-0 rounded px-2.5 py-1 transition-colors ${
               filter === 'critical' ? 'bg-white font-semibold text-signal-red shadow-sm' : 'hover:text-ink'
             }`}
           >
@@ -92,7 +92,7 @@ export default function LiveTriageTable({ animals = [], alerts = [] }) {
           </button>
           <button
             onClick={() => setFilter('moderate')}
-            className={`rounded px-2.5 py-1 transition-colors ${
+            className={`shrink-0 rounded px-2.5 py-1 transition-colors ${
               filter === 'moderate' ? 'bg-white font-semibold text-signal-amber shadow-sm' : 'hover:text-ink'
             }`}
           >
@@ -101,7 +101,95 @@ export default function LiveTriageTable({ animals = [], alerts = [] }) {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      {/* Mobile Card Triage View (Visible on phones & small screens) */}
+      <div className="divide-y divide-line/70 md:hidden">
+        {displayedList.slice(0, 6).map((animal) => {
+          const executed = actionSuccess[animal.id]
+
+          return (
+            <div
+              key={animal.id}
+              className={`p-3.5 space-y-2.5 ${
+                animal.id === 'COW-024' ? 'bg-pasture-50/40' : ''
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="font-display text-sm font-bold text-ink">{animal.id}</span>
+                  {animal.id === 'COW-024' && (
+                    <span className="rounded bg-pasture-700 px-1.5 py-0.5 text-[9px] font-bold uppercase text-white">
+                      Target Demo
+                    </span>
+                  )}
+                  <span className="text-xs text-ink-soft">{animal.breed}</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Badge tone={animal.riskLevel}>{animal.riskScore}%</Badge>
+                  <button
+                    onClick={() => navigate(`/animals/${animal.id}`)}
+                    className="rounded p-1 text-ink-faint hover:text-ink"
+                    aria-label={`View ${animal.id}`}
+                  >
+                    <ArrowRight size={14} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Telemetry snippet */}
+              <div className="grid grid-cols-3 gap-1.5 text-center text-xs">
+                <div className="rounded bg-canvas-sunken/80 px-2 py-1">
+                  <p className="text-[10px] text-ink-faint uppercase">Est. SCC</p>
+                  <p className="font-semibold text-ink tabular">{Math.round(animal.scc / 1000)}k</p>
+                </div>
+                <div className="rounded bg-canvas-sunken/80 px-2 py-1">
+                  <p className="text-[10px] text-ink-faint uppercase">Udder Temp</p>
+                  <p className={`font-semibold tabular ${animal.temperature > 38.8 ? 'text-signal-red font-bold' : 'text-ink'}`}>
+                    {animal.temperature}°C
+                  </p>
+                </div>
+                <div className="rounded bg-canvas-sunken/80 px-2 py-1">
+                  <p className="text-[10px] text-ink-faint uppercase">Forecast</p>
+                  <p className="font-semibold text-pasture-800 text-[11px] truncate">{animal.predictedWindow || '48-72h'}</p>
+                </div>
+              </div>
+
+              {/* Action buttons */}
+              <div>
+                {executed ? (
+                  <div className="rounded-md bg-pasture-50 p-2 text-center text-xs font-semibold text-pasture-800 border border-pasture-200">
+                    <CheckCircle2 size={13} className="inline mr-1 text-pasture-700" />
+                    {executed} Executed
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-3 gap-1.5">
+                    <button
+                      onClick={() => handleAction(animal.id, 'Quarantine & Teat Dip')}
+                      className="rounded border border-line bg-canvas-sunken py-1.5 text-[11px] font-semibold text-ink active:bg-line transition-colors text-center"
+                    >
+                      Quarantine
+                    </button>
+                    <button
+                      onClick={() => handleAction(animal.id, 'Milk Diverted')}
+                      className="rounded border border-signal-red/30 bg-signal-redSoft py-1.5 text-[11px] font-semibold text-signal-red active:bg-signal-red/20 transition-colors text-center"
+                    >
+                      Divert
+                    </button>
+                    <button
+                      onClick={() => handleAction(animal.id, 'Vet Tele-Alert Sent')}
+                      className="rounded border border-signal-blue/30 bg-signal-blueSoft py-1.5 text-[11px] font-semibold text-signal-blue active:bg-signal-blue/20 transition-colors flex items-center justify-center gap-1"
+                    >
+                      <Stethoscope size={11} /> Alert Vet
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Desktop & Tablet Table View */}
+      <div className="hidden md:block overflow-x-auto">
         <table className="w-full min-w-[720px] border-collapse text-left text-xs">
           <thead>
             <tr className="border-b border-line bg-canvas/60 text-[11px] uppercase tracking-wider text-ink-faint">

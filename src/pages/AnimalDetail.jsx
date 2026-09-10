@@ -138,85 +138,87 @@ export default function AnimalDetail() {
   return (
     <div className="space-y-6">
       {/* Back link & Top Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <Link to="/animals" className="inline-flex items-center gap-1.5 text-sm font-medium text-ink-soft hover:text-ink">
-          <ArrowLeft size={15} /> Back to Herd Animals
+      <div className="flex items-center justify-between gap-2">
+        <Link to="/animals" className="inline-flex items-center gap-1 text-xs sm:text-sm font-medium text-ink-soft hover:text-ink">
+          <ArrowLeft size={14} /> <span className="hidden sm:inline">Back to Herd Animals</span><span className="sm:hidden">Animals</span>
         </Link>
 
         {/* Real-time Telemetry & Veterinary Actions */}
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex items-center gap-1.5 sm:gap-2.5">
           {/* Refresh Real-Time Telemetry Button */}
           <button
             onClick={handleRefresh}
             disabled={refreshing}
             title="Refresh real-time telemetry from ESP32 edge tags, in-line milk EC probes, and thermal sensors"
-            className={`inline-flex items-center gap-1.5 rounded-md border border-line bg-canvas-raised px-3 py-1.5 text-xs font-semibold text-ink shadow-sm hover:bg-canvas-sunken hover:border-pasture-500 transition-all active:scale-95 ${
+            className={`inline-flex items-center gap-1 sm:gap-1.5 rounded-md border border-line bg-canvas-raised px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-ink shadow-sm hover:bg-canvas-sunken hover:border-pasture-500 transition-all active:scale-95 ${
               refreshing ? 'opacity-70 cursor-not-allowed' : ''
             }`}
           >
-            <RefreshCw size={13} className={`text-pasture-700 ${refreshing ? 'animate-spin' : ''}`} />
-            <span>{refreshing ? 'Refreshing Real-Time...' : 'Refresh Live Telemetry'}</span>
+            <RefreshCw size={12} className={`text-pasture-700 ${refreshing ? 'animate-spin' : ''}`} />
+            <span className="sm:hidden">Refresh</span>
+            <span className="hidden sm:inline">{refreshing ? 'Refreshing Real-Time...' : 'Refresh Live Telemetry'}</span>
           </button>
 
           {/* Quick Veterinary Action Button (Requirement 12) */}
           <button
             onClick={() => setVetModalOpen(true)}
-            className="flex items-center gap-2 rounded-md bg-signal-blue px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-signal-blue/90"
+            className="flex items-center gap-1.5 rounded-md bg-signal-blue px-2.5 sm:px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-signal-blue/90 active:scale-95"
           >
-            <Stethoscope size={14} />
-            {existingReview ? `Vet Status: ${existingReview.status.replace('_', ' ')}` : 'Request Veterinary Review'}
+            <Stethoscope size={13} />
+            <span className="sm:hidden">Vet Review</span>
+            <span className="hidden sm:inline">{existingReview ? `Vet: ${existingReview.status.replace('_', ' ')}` : 'Request Veterinary Review'}</span>
           </button>
         </div>
       </div>
 
       {/* Animal Header */}
-      <div className="flex flex-wrap items-end justify-between gap-3">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <div className="flex items-center gap-3">
-            <h1 className="font-display text-2xl font-bold text-ink sm:text-3xl">{animal.id}</h1>
-            <Badge tone={animal.riskLevel} className="text-xs font-bold uppercase">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <h1 className="font-display text-xl font-bold text-ink sm:text-3xl">{animal.id}</h1>
+            <Badge tone={animal.riskLevel} className="text-[11px] sm:text-xs font-bold uppercase">
               {animal.riskLevel === 'critical' ? 'CRITICAL' : animal.riskLevel === 'high' ? 'HIGH' : animal.riskLevel === 'moderate' ? 'WATCH' : 'LOW'}
             </Badge>
           </div>
-          <p className="mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm text-ink-soft">
-            <span>{animal.breed} Indigenous Cow</span> · <span>Female</span> · <span>{animal.age} Years</span> · <span>Lactation {animal.lactationNumber}</span> · <span>Tag: RFID-ESP32</span>
+          <p className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs sm:text-sm text-ink-soft">
+            <span>{animal.breed} Indigenous Cow</span> · <span>Female</span> · <span>{animal.age} Yrs</span> · <span>Lactation {animal.lactationNumber}</span> · <span>Tag: RFID-ESP32</span>
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-semibold text-ink-faint">Prediction Window:</span>
-          <span className="rounded-md bg-pasture-100 px-2.5 py-1 text-xs font-bold text-pasture-800 border border-pasture-300/60">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+          <span className="text-[11px] sm:text-xs font-semibold text-ink-faint">Prediction Window:</span>
+          <span className="rounded-md bg-pasture-100 px-2 sm:px-2.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-bold text-pasture-800 border border-pasture-300/60">
             {animal.predictedWindow || '48–72 hours'} (Subclinical)
           </span>
           <button
             onClick={handleRefresh}
             disabled={refreshing}
             title="Fetch real-time ESP32 packet"
-            className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-800 border border-emerald-300/60 shadow-xs hover:bg-emerald-100 transition-all active:scale-95"
+            className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10.5px] font-semibold text-emerald-800 border border-emerald-300/60 shadow-xs hover:bg-emerald-100 transition-all active:scale-95"
           >
-            <RefreshCw size={10} className={`text-emerald-700 ${refreshing ? 'animate-spin' : ''}`} />
-            <span>{refreshing ? 'Syncing...' : 'Live Real-Time'}</span>
+            <RefreshCw size={9} className={`text-emerald-700 ${refreshing ? 'animate-spin' : ''}`} />
+            <span>Live Sync</span>
           </button>
         </div>
       </div>
 
       {/* Risk Gauge & Biometrics Summary */}
-      <div className="grid grid-cols-1 gap-5 xl:grid-cols-12">
-        <div className="flex flex-col items-center justify-center rounded-lg border border-line bg-canvas-raised p-6 shadow-card xl:col-span-4">
+      <div className="grid grid-cols-1 gap-4 sm:gap-5 xl:grid-cols-12">
+        <div className="flex flex-col items-center justify-center rounded-lg border border-line bg-canvas-raised p-4 sm:p-6 shadow-card xl:col-span-4">
           <RiskGauge score={animal.riskScore} level={animal.riskLevel} levelLabel={`Model Score: ${animal.riskScore}/100`} />
-          <div className="mt-4 grid w-full grid-cols-2 gap-3 border-t border-line pt-4 text-center">
+          <div className="mt-4 grid w-full grid-cols-2 gap-3 border-t border-line pt-3 sm:pt-4 text-center">
             <div>
-              <p className="text-[11px] uppercase tracking-wide text-ink-faint">Forecast Window</p>
-              <p className="mt-0.5 text-sm font-semibold text-ink">{animal.predictedWindow || '48–72 hours'}</p>
+              <p className="text-[10px] sm:text-[11px] uppercase tracking-wide text-ink-faint">Forecast Window</p>
+              <p className="mt-0.5 text-xs sm:text-sm font-semibold text-ink">{animal.predictedWindow || '48–72 hours'}</p>
             </div>
             <div>
-              <p className="text-[11px] uppercase tracking-wide text-ink-faint">Model Scoring</p>
-              <p className="mt-0.5 text-sm font-semibold text-ink tabular">{animal.riskScore}/100 (Relative)</p>
+              <p className="text-[10px] sm:text-[11px] uppercase tracking-wide text-ink-faint">Model Scoring</p>
+              <p className="mt-0.5 text-xs sm:text-sm font-semibold text-ink tabular">{animal.riskScore}/100 (Relative)</p>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3.5 xl:col-span-8 sm:grid-cols-3">
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5 xl:col-span-8 sm:grid-cols-3">
           {[
             { icon: Zap, label: 'Milk EC (In-Line)', value: `${baseline.currentEC} mS/cm`, delta: baseline.ecDeviation, unit: '%', alert: baseline.ecDeviation > 15 },
             { icon: Droplets, label: 'AI-Estimated SCC', value: `${animal.scc.toLocaleString('en-IN')} cells/mL`, delta: Math.round(((animal.scc - 150000) / 150000) * 100), unit: '%', alert: animal.scc > 300000 },
@@ -225,18 +227,18 @@ export default function AnimalDetail() {
             { icon: ActivityIcon, label: 'Activity Level', value: `${animal.activity > 0 ? '+' : ''}${animal.activity}%`, delta: animal.activity, unit: '%' },
             { icon: HeartPulse, label: 'Rumination Rate', value: `${animal.rumination > 0 ? '+' : ''}${animal.rumination}%`, delta: animal.rumination, unit: '%' },
           ].map((m) => (
-            <div key={m.label} className="rounded-lg border border-line bg-canvas-raised p-4 shadow-card">
+            <div key={m.label} className="rounded-lg border border-line bg-canvas-raised p-3 sm:p-4 shadow-card">
               <div className="flex items-center justify-between">
-                <div className="flex h-8 w-8 items-center justify-center rounded-md bg-canvas-sunken">
-                  <m.icon size={15} className={m.alert ? 'text-signal-red' : 'text-ink-soft'} />
+                <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md bg-canvas-sunken">
+                  <m.icon size={14} className={m.alert ? 'text-signal-red' : 'text-ink-soft'} />
                 </div>
                 {m.alert && <span className="h-2 w-2 rounded-full bg-signal-red animate-ping" />}
               </div>
-              <p className="mt-3 font-display text-lg font-bold text-ink tabular">{m.value}</p>
-              <p className="text-xs text-ink-soft">{m.label}</p>
+              <p className="mt-2.5 font-display text-base sm:text-lg font-bold text-ink tabular">{m.value}</p>
+              <p className="text-[11px] sm:text-xs text-ink-soft truncate">{m.label}</p>
               {m.delta !== 0 && (
-                <p className={`mt-1 text-xs font-semibold tabular ${m.delta > 0 && m.label !== 'Daily Milk Yield' ? 'text-signal-red' : m.delta < 0 ? 'text-signal-red' : 'text-pasture-600'}`}>
-                  {m.delta > 0 ? '↑ +' : '↓ '}{Math.abs(m.delta)}{m.unit} vs baseline
+                <p className={`mt-1 text-[10.5px] sm:text-xs font-semibold tabular ${m.delta > 0 && m.label !== 'Daily Milk Yield' ? 'text-signal-red' : m.delta < 0 ? 'text-signal-red' : 'text-pasture-600'}`}>
+                  {m.delta > 0 ? '↑ +' : '↓ '}{Math.abs(m.delta)}{m.unit} vs base
                 </p>
               )}
             </div>
@@ -248,7 +250,7 @@ export default function AnimalDetail() {
       <div className="rounded-lg border border-line bg-canvas-raised p-5 shadow-card">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-3">
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <h3 className="font-display text-base font-semibold text-ink">
                 Personalized Animal Baseline & Deviations (Requirement 7)
               </h3>
@@ -320,7 +322,7 @@ export default function AnimalDetail() {
       </div>
 
       {/* 3. Trend Analysis with 24h, 7d, 30d Toggles (Requirement 10) */}
-      <div className="rounded-lg border border-line bg-canvas-raised p-5 shadow-card">
+      <div className="rounded-lg border border-line bg-canvas-raised p-4 sm:p-5 shadow-card">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-3">
           <div>
             <h3 className="font-display text-base font-semibold text-ink">Telemetry Trend Analysis</h3>
@@ -328,7 +330,7 @@ export default function AnimalDetail() {
           </div>
 
           {/* Timeframe selector: 24h / 7d / 30d per Requirement 10 */}
-          <div className="flex items-center rounded-md border border-line bg-canvas p-0.5 text-xs font-medium">
+          <div className="flex w-full sm:w-auto items-center justify-between sm:justify-start rounded-md border border-line bg-canvas p-0.5 text-xs font-medium">
             {[
               { key: '24h', label: '24 Hours' },
               { key: '7d', label: '7 Days' },
@@ -337,7 +339,7 @@ export default function AnimalDetail() {
               <button
                 key={tf.key}
                 onClick={() => setTimeframe(tf.key)}
-                className={`rounded px-3 py-1 transition-colors ${timeframe === tf.key ? 'bg-pasture-700 text-white font-semibold shadow-sm' : 'text-ink-soft hover:text-ink'}`}
+                className={`flex-1 sm:flex-initial rounded px-3 py-1 transition-colors text-center ${timeframe === tf.key ? 'bg-pasture-700 text-white font-semibold shadow-sm' : 'text-ink-soft hover:text-ink'}`}
               >
                 {tf.label}
               </button>
@@ -345,13 +347,13 @@ export default function AnimalDetail() {
           </div>
         </div>
 
-        {/* Tab metrics */}
-        <div className="mt-3 flex flex-wrap gap-1.5">
+        {/* Tab metrics: horizontally scrollable on mobile */}
+        <div className="mt-3 flex overflow-x-auto no-scrollbar pb-1 gap-1.5 sm:flex-wrap">
           {TABS.map((tab) => (
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`shrink-0 whitespace-nowrap rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
                 activeTab === tab.key ? 'bg-pasture-700 text-white font-semibold' : 'bg-canvas-sunken text-ink-soft hover:bg-line/70'
               }`}
             >

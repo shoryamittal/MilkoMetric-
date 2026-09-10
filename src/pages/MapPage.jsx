@@ -55,7 +55,7 @@ export default function MapPage() {
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
         <div className="overflow-hidden rounded-lg border border-line shadow-card lg:col-span-8">
-          <MapContainer center={[19.4, 76.0]} zoom={6.4} style={{ height: '560px', width: '100%' }} scrollWheelZoom={false}>
+          <MapContainer center={[19.4, 76.0]} zoom={6.4} className="h-[350px] sm:h-[540px] w-full" scrollWheelZoom={false}>
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

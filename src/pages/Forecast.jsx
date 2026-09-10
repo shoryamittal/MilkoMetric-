@@ -66,7 +66,7 @@ export default function Forecast() {
     <div className="space-y-6">
       <ModelStatusCard />
 
-      <div className="flex gap-1.5 rounded-sm border border-line bg-canvas-raised p-1 w-fit">
+      <div className="flex w-full sm:w-fit gap-1 rounded-lg border border-line bg-canvas-raised p-1">
         {[
           { key: 'herd', label: 'Herd Forecast', icon: Users },
           { key: 'individual', label: 'Individual Forecast', icon: Search },
@@ -74,8 +74,8 @@ export default function Forecast() {
           <button
             key={tItem.key}
             onClick={() => setTab(tItem.key)}
-            className={`flex items-center gap-1.5 rounded-sm px-3.5 py-2 text-[13px] font-medium transition-colors ${
-              tab === tItem.key ? 'bg-pasture-700 text-white' : 'text-ink-soft hover:bg-canvas-sunken'
+            className={`flex flex-1 sm:flex-initial items-center justify-center gap-1.5 rounded-md px-3.5 py-2 text-xs sm:text-[13px] font-medium transition-colors ${
+              tab === tItem.key ? 'bg-pasture-700 text-white font-semibold shadow-sm' : 'text-ink-soft hover:bg-canvas-sunken'
             }`}
           >
             <tItem.icon size={14} /> {tItem.label}

@@ -64,30 +64,30 @@ export default function CompetitionHeroBar() {
         </div>
 
         {/* Right action controls for Live Demonstration */}
-        <div className="flex flex-wrap items-center gap-2.5 lg:flex-col lg:items-end">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row lg:flex-col items-stretch sm:items-center lg:items-end gap-2.5 w-full lg:w-auto">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
             <button
               onClick={simulateMastitisEvent}
-              className="flex items-center gap-1.5 rounded-md bg-signal-red px-3.5 py-2 text-xs font-bold text-white shadow-md transition-all hover:bg-signal-critical active:scale-95"
+              className="flex items-center justify-center gap-1.5 rounded-md bg-signal-red px-3.5 py-2 text-xs font-bold text-white shadow-md transition-all hover:bg-signal-critical active:scale-95 text-center"
             >
-              <Play size={13} className="fill-white" /> Simulate Outbreak (COW-024)
+              <Play size={13} className="fill-white shrink-0" /> Simulate Outbreak (COW-024)
             </button>
 
             <button
               onClick={resetSimulation}
               disabled={!simulationActive}
-              className="flex items-center gap-1.5 rounded-md border border-white/20 bg-white/10 px-3 py-2 text-xs font-semibold text-white backdrop-blur transition-all hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-40"
+              className="flex items-center justify-center gap-1.5 rounded-md border border-white/20 bg-white/10 px-3 py-2 text-xs font-semibold text-white backdrop-blur transition-all hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-40 text-center"
             >
-              <RotateCcw size={13} /> Reset Baseline
+              <RotateCcw size={13} className="shrink-0" /> Reset Baseline
             </button>
           </div>
 
           <button
             onClick={handleExportSummary}
             disabled={exporting}
-            className="flex items-center gap-1.5 rounded-md border border-white/15 bg-white/5 px-3 py-1.5 text-[11.5px] font-medium text-white/80 hover:bg-white/15 transition-all"
+            className="flex items-center justify-center gap-1.5 rounded-md border border-white/15 bg-white/5 px-3 py-1.5 text-[11.5px] font-medium text-white/80 hover:bg-white/15 transition-all text-center w-full sm:w-auto"
           >
-            <Download size={12} /> {exporting ? 'Generating Report...' : 'Export Clinical Dossier'}
+            <Download size={12} className="shrink-0" /> {exporting ? 'Generating Report...' : 'Export Clinical Dossier'}
           </button>
         </div>
       </div>

@@ -45,17 +45,17 @@ export default function IoT() {
               Trigger a live mastitis event on COW-024 and watch alerts, forecasts and the dashboard update in real time.
             </p>
           </div>
-          <div className="flex shrink-0 gap-2">
+          <div className="flex flex-col sm:flex-row shrink-0 gap-2 w-full sm:w-auto">
             <button
               onClick={simulateMastitisEvent}
-              className="rounded-sm bg-signal-red px-4 py-2.5 text-sm font-semibold text-white hover:bg-signal-critical"
+              className="rounded-md bg-signal-red px-4 py-2.5 text-xs sm:text-sm font-semibold text-white hover:bg-signal-critical text-center"
             >
               Simulate Mastitis Event
             </button>
             <button
               onClick={resetSimulation}
               disabled={!simulationActive}
-              className="flex items-center gap-1.5 rounded-sm border border-line bg-canvas-raised px-4 py-2.5 text-sm font-semibold text-ink disabled:opacity-40 hover:bg-canvas-sunken"
+              className="flex items-center justify-center gap-1.5 rounded-md border border-line bg-canvas-raised px-4 py-2.5 text-xs sm:text-sm font-semibold text-ink disabled:opacity-40 hover:bg-canvas-sunken text-center"
             >
               <RotateCcw size={14} /> Reset Simulation
             </button>
@@ -70,15 +70,15 @@ export default function IoT() {
           { icon: Milk, label: 'In-Line EC Probes', value: DEVICE_COUNTS.milkSensors },
           { icon: Thermometer, label: 'Shed THI Sensors', value: DEVICE_COUNTS.environmentalSensors },
         ].map((s) => (
-          <div key={s.label} className="rounded-lg border border-line bg-canvas-raised p-4 shadow-card">
+          <div key={s.label} className="rounded-lg border border-line bg-canvas-raised p-3 sm:p-4 shadow-card">
             <s.icon size={16} className="text-pasture-600" />
-            <p className="mt-2.5 font-display text-2xl font-semibold text-ink tabular">{s.value}</p>
-            <p className="text-xs text-ink-soft">{s.label}</p>
+            <p className="mt-2.5 font-display text-xl sm:text-2xl font-semibold text-ink tabular">{s.value}</p>
+            <p className="text-[11px] sm:text-xs text-ink-soft">{s.label}</p>
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         <LiveCard icon={Thermometer} label="Farm Ambient Temp" value={`${liveEnvironment?.farmTemperature || 31.4}°C`} />
         <LiveCard icon={Droplets} label="Relative Humidity" value={`${liveEnvironment?.humidity || 72}%`} />
         <LiveCard icon={Milk} label="Milk Temp (Probe)" value={`${liveEnvironment?.milkTemperature || 38.6}°C`} />
@@ -101,7 +101,36 @@ export default function IoT() {
             ))}
           </select>
         </div>
-        <div className="max-h-[420px] overflow-auto">
+
+        {/* Mobile Device Cards View */}
+        <div className="divide-y divide-line/70 block md:hidden">
+          {filteredDevices.map((d) => (
+            <div key={d.id} className="p-3.5 space-y-2">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-xs font-bold text-ink">{d.id}</span>
+                  <span className="ml-1.5 text-[11px] text-ink-soft">({d.type})</span>
+                </div>
+                <Badge tone={d.connection === 'Connected' ? 'ok' : 'moderate'} dot>
+                  {d.connection}
+                </Badge>
+              </div>
+              <div className="flex items-center justify-between text-xs text-ink-soft">
+                <span>Target: <strong className="text-ink">{d.target}</strong></span>
+                <span className="flex items-center gap-1 font-medium">
+                  <Battery size={13} className={d.battery < 25 ? 'text-signal-red' : 'text-ink-faint'} />
+                  {d.battery}%
+                </span>
+              </div>
+              <div className="text-[11px] text-ink-faint">
+                Updated {timeAgo(d.lastUpdateSec)}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop Device Table */}
+        <div className="max-h-[420px] overflow-auto hidden md:block">
           <table className="w-full min-w-[640px] border-collapse text-left text-[13px]">
             <thead className="sticky top-0 bg-canvas-raised">
               <tr className="border-b border-line text-[11px] uppercase tracking-wide text-ink-faint">

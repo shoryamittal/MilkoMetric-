@@ -24,7 +24,7 @@ export default function Recommendations() {
           <p className="text-sm font-semibold text-ink">Priority Queue</p>
           <p className="text-xs text-ink-soft">{priority.length} animals need review</p>
         </div>
-        <div className="max-h-[560px] divide-y divide-line/70 overflow-y-auto">
+        <div className="max-h-[260px] xl:max-h-[560px] divide-y divide-line/70 overflow-y-auto">
           {priority.map((a) => (
             <button
               key={a.id}
@@ -49,7 +49,7 @@ export default function Recommendations() {
       <div className="xl:col-span-8">
         {selected && (
           <>
-            <div className="mb-4 flex items-center justify-between">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
               <div>
                 <h2 className="font-display text-lg font-semibold text-ink">Recommended Actions — {selected.id}</h2>
                 <p className="text-sm text-ink-soft">Prioritised by urgency, based on current sensor readings</p>
