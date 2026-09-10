@@ -9,30 +9,30 @@ export default function ShedHeatStressCard() {
   const thi = liveEnvironment?.thiIndex || (Math.round((0.8 * ambientTemp + (humidity / 100) * (ambientTemp - 14.4) + 46.4) * 10) / 10)
 
   return (
-    <div className="rounded-lg border border-line bg-canvas-raised p-5 shadow-card">
+    <div className="rounded-lg border border-line bg-canvas-raised p-4 sm:p-5 shadow-card">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-3.5">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-md bg-signal-amberSoft text-signal-amber shadow-sm">
+        <div className="flex items-start sm:items-center gap-2.5 min-w-0 flex-1">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-signal-amberSoft text-signal-amber shadow-sm">
             <ThermometerSun size={18} />
           </div>
-          <div>
-            <div className="flex items-center gap-2">
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
               <h3 className="font-display text-base font-semibold text-ink">
                 Shed Microclimate & Heat Stress Index (THI)
               </h3>
-              <span className="inline-flex items-center gap-1 rounded-full bg-signal-amberSoft px-2 py-0.5 text-[10.5px] font-bold text-signal-amber">
+              <span className="inline-flex items-center gap-1 rounded-full bg-signal-amberSoft px-2 py-0.5 text-[10.5px] font-bold text-signal-amber shrink-0">
                 <AlertTriangle size={11} /> Moderate Heat Stress (THI {thi})
               </span>
             </div>
-            <p className="text-xs text-ink-soft">
+            <p className="text-xs text-ink-soft mt-0.5">
               Continuous multi-sensor telemetry streamed via Shed ESP32 Environmental Nodes (LoRaWAN)
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 text-xs text-ink-soft">
+        <div className="flex items-center gap-2 text-xs text-ink-soft shrink-0">
           <span className="flex items-center gap-1 rounded-md border border-line bg-canvas-sunken px-2.5 py-1 text-[11px] font-medium text-ink">
-            <Cpu size={11} className="text-pasture-600" /> Node #ENV-02 (Shed A)
+            <Cpu size={11} className="text-pasture-600 shrink-0" /> Node #ENV-02 (Shed A)
           </span>
         </div>
       </div>

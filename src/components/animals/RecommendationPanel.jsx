@@ -17,11 +17,11 @@ const CHECKLIST_ITEMS = [
 ]
 
 const WORKFLOW_STAGES = [
-  { key: 'OPEN', label: '1. Detected' },
-  { key: 'UNDER_REVIEW', label: '2. Under Review' },
-  { key: 'VET_CONTACTED', label: '3. Vet Contacted' },
-  { key: 'ACTION_TAKEN', label: '4. Action Taken' },
-  { key: 'RESOLVED', label: '5. Resolved' },
+  { key: 'OPEN', label: '1. Detected', shortLabel: '1. Detect' },
+  { key: 'UNDER_REVIEW', label: '2. Under Review', shortLabel: '2. Review' },
+  { key: 'VET_CONTACTED', label: '3. Vet Contacted', shortLabel: '3. Vet' },
+  { key: 'ACTION_TAKEN', label: '4. Action Taken', shortLabel: '4. Action' },
+  { key: 'RESOLVED', label: '5. Resolved', shortLabel: '5. Done' },
 ]
 
 export default function RecommendationPanel({ animal }) {
@@ -119,7 +119,7 @@ export default function RecommendationPanel({ animal }) {
                       }`}
                     />
                     <p
-                      className={`text-[10.5px] font-semibold truncate ${
+                      className={`text-[10px] sm:text-[10.5px] font-semibold truncate ${
                         isCurrent
                           ? 'text-signal-blue'
                           : isPassed
@@ -127,7 +127,8 @@ export default function RecommendationPanel({ animal }) {
                           : 'text-ink-faint'
                       }`}
                     >
-                      {stg.label}
+                      <span className="sm:hidden">{stg.shortLabel}</span>
+                      <span className="hidden sm:inline">{stg.label}</span>
                     </p>
                   </div>
                 )
@@ -183,7 +184,7 @@ export default function RecommendationPanel({ animal }) {
                 showToast({ tone: 'ok', title: 'Inspection logged', message: `${animal.id} marked as physically inspected.` })
               }}
               disabled={inspectionDone}
-              className={`mt-3 flex items-center gap-1.5 rounded-sm px-3 py-1.5 text-xs font-semibold transition-colors ${
+              className={`mt-3 flex items-center justify-center gap-1.5 rounded-md px-3 py-2 text-xs font-semibold transition-colors w-full sm:w-auto text-center ${
                 inspectionDone ? 'bg-pasture-100 text-pasture-700' : 'bg-signal-red text-white hover:bg-signal-critical'
               }`}
             >
@@ -212,7 +213,7 @@ export default function RecommendationPanel({ animal }) {
                 showToast({ tone: 'ok', title: 'CMT Test logged', message: `CMT diagnostic test recorded for ${animal.id}.` })
               }}
               disabled={testRecorded}
-              className={`mt-3 flex items-center gap-1.5 rounded-sm px-3 py-1.5 text-xs font-semibold transition-colors ${
+              className={`mt-3 flex items-center justify-center gap-1.5 rounded-md px-3 py-2 text-xs font-semibold transition-colors w-full sm:w-auto text-center ${
                 testRecorded ? 'bg-pasture-100 text-pasture-700' : 'border border-signal-amber text-signal-amber hover:bg-signal-amberSoft'
               }`}
             >

@@ -115,9 +115,9 @@ export default function IoT() {
                   {d.connection}
                 </Badge>
               </div>
-              <div className="flex items-center justify-between text-xs text-ink-soft">
-                <span>Target: <strong className="text-ink">{d.target}</strong></span>
-                <span className="flex items-center gap-1 font-medium">
+              <div className="flex items-center justify-between gap-2 text-xs text-ink-soft">
+                <span className="truncate min-w-0 flex-1">Target: <strong className="text-ink">{d.target}</strong></span>
+                <span className="flex items-center gap-1 font-medium shrink-0">
                   <Battery size={13} className={d.battery < 25 ? 'text-signal-red' : 'text-ink-faint'} />
                   {d.battery}%
                 </span>

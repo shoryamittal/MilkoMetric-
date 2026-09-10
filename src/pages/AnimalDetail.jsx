@@ -180,15 +180,18 @@ export default function AnimalDetail() {
               {animal.riskLevel === 'critical' ? 'CRITICAL' : animal.riskLevel === 'high' ? 'HIGH' : animal.riskLevel === 'moderate' ? 'WATCH' : 'LOW'}
             </Badge>
           </div>
-          <p className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs sm:text-sm text-ink-soft">
-            <span>{animal.breed} Indigenous Cow</span> · <span>Female</span> · <span>{animal.age} Yrs</span> · <span>Lactation {animal.lactationNumber}</span> · <span>Tag: RFID-ESP32</span>
+          <p className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-ink-soft">
+            <span className="rounded bg-canvas-sunken px-1.5 py-0.5 text-ink">{animal.breed}</span>
+            <span className="rounded bg-canvas-sunken px-1.5 py-0.5 text-ink">{animal.age} Yrs</span>
+            <span className="rounded bg-canvas-sunken px-1.5 py-0.5 text-ink">Lactation {animal.lactationNumber}</span>
+            <span className="rounded bg-canvas-sunken px-1.5 py-0.5 text-ink">RFID-ESP32</span>
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-          <span className="text-[11px] sm:text-xs font-semibold text-ink-faint">Prediction Window:</span>
+          <span className="text-[11px] sm:text-xs font-semibold text-ink-faint">Window:</span>
           <span className="rounded-md bg-pasture-100 px-2 sm:px-2.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-bold text-pasture-800 border border-pasture-300/60">
-            {animal.predictedWindow || '48–72 hours'} (Subclinical)
+            {animal.predictedWindow || '48–72h'} (Subclinical)
           </span>
           <button
             onClick={handleRefresh}
@@ -221,23 +224,25 @@ export default function AnimalDetail() {
         <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5 xl:col-span-8 sm:grid-cols-3">
           {[
             { icon: Zap, label: 'Milk EC (In-Line)', value: `${baseline.currentEC} mS/cm`, delta: baseline.ecDeviation, unit: '%', alert: baseline.ecDeviation > 15 },
-            { icon: Droplets, label: 'AI-Estimated SCC', value: `${animal.scc.toLocaleString('en-IN')} cells/mL`, delta: Math.round(((animal.scc - 150000) / 150000) * 100), unit: '%', alert: animal.scc > 300000 },
+            { icon: Droplets, label: 'AI-Estimated SCC', value: `${Math.round(animal.scc / 1000)}k cells/mL`, delta: Math.round(((animal.scc - 150000) / 150000) * 100), unit: '%', alert: animal.scc > 300000 },
             { icon: Thermometer, label: 'Udder Temperature', value: `${animal.temperature}°C`, delta: baseline.tempDeviation, unit: '°C', signed: true, alert: baseline.tempDeviation > 0.6 },
             { icon: Milk, label: 'Daily Milk Yield', value: `${animal.milkYield} L/day`, delta: animal.milkYieldChangePct, unit: '%', alert: animal.milkYieldChangePct < -10 },
             { icon: ActivityIcon, label: 'Activity Level', value: `${animal.activity > 0 ? '+' : ''}${animal.activity}%`, delta: animal.activity, unit: '%' },
             { icon: HeartPulse, label: 'Rumination Rate', value: `${animal.rumination > 0 ? '+' : ''}${animal.rumination}%`, delta: animal.rumination, unit: '%' },
           ].map((m) => (
-            <div key={m.label} className="rounded-lg border border-line bg-canvas-raised p-3 sm:p-4 shadow-card">
-              <div className="flex items-center justify-between">
-                <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md bg-canvas-sunken">
-                  <m.icon size={14} className={m.alert ? 'text-signal-red' : 'text-ink-soft'} />
+            <div key={m.label} className="rounded-lg border border-line bg-canvas-raised p-3 sm:p-4 shadow-card flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between">
+                  <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md bg-canvas-sunken">
+                    <m.icon size={14} className={m.alert ? 'text-signal-red' : 'text-ink-soft'} />
+                  </div>
+                  {m.alert && <span className="h-2 w-2 rounded-full bg-signal-red animate-ping" />}
                 </div>
-                {m.alert && <span className="h-2 w-2 rounded-full bg-signal-red animate-ping" />}
+                <p className="mt-2.5 font-display text-sm sm:text-base lg:text-lg font-bold text-ink tabular truncate" title={m.value}>{m.value}</p>
+                <p className="text-[11px] sm:text-xs text-ink-soft truncate" title={m.label}>{m.label}</p>
               </div>
-              <p className="mt-2.5 font-display text-base sm:text-lg font-bold text-ink tabular">{m.value}</p>
-              <p className="text-[11px] sm:text-xs text-ink-soft truncate">{m.label}</p>
               {m.delta !== 0 && (
-                <p className={`mt-1 text-[10.5px] sm:text-xs font-semibold tabular ${m.delta > 0 && m.label !== 'Daily Milk Yield' ? 'text-signal-red' : m.delta < 0 ? 'text-signal-red' : 'text-pasture-600'}`}>
+                <p className={`mt-1.5 text-[10.5px] sm:text-xs font-semibold tabular truncate ${m.delta > 0 && m.label !== 'Daily Milk Yield' ? 'text-signal-red' : m.delta < 0 ? 'text-signal-red' : 'text-pasture-600'}`}>
                   {m.delta > 0 ? '↑ +' : '↓ '}{Math.abs(m.delta)}{m.unit} vs base
                 </p>
               )}

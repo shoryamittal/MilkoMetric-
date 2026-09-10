@@ -25,7 +25,7 @@ export default function CompetitionHeroBar() {
       <div className="relative flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         {/* Left info & live telemetry ticker */}
         <div className="space-y-1.5">
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-pasture-500/20 px-2.5 py-0.5 text-xs font-semibold text-pasture-300 ring-1 ring-inset ring-pasture-500/40">
               <span className="h-1.5 w-1.5 animate-pulseDot rounded-full bg-pasture-400" /> Live AI Telemetry
             </span>
@@ -33,12 +33,14 @@ export default function CompetitionHeroBar() {
               <Cpu size={11} className="text-emerald-300" /> 100% Offline Edge TinyML
             </span>
             <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-0.5 text-[11px] font-medium text-white/80">
-              <Radio size={11} className="text-pasture-300" /> ESP32 · LoRa / BLE · In-Line EC Probe
+              <Radio size={11} className="text-pasture-300" /> ESP32 · LoRa / BLE · In-Line EC
             </span>
-            <span className="text-[11px] text-white/50">Inference latency: 18ms · MQTT Sync: Ready</span>
+            <span className="inline-flex items-center rounded-full bg-white/5 px-2 py-0.5 text-[10.5px] text-white/60 border border-white/10">
+              Latency: 18ms · MQTT: Ready
+            </span>
           </div>
 
-          <h2 className="font-display text-lg font-bold sm:text-xl text-white">
+          <h2 className="font-display text-base font-bold sm:text-xl text-white leading-snug">
             Pre-Symptomatic Mastitis Forecasting Engine (SIH26109)
           </h2>
           <p className="text-xs text-white/70 max-w-2xl leading-relaxed">
@@ -47,17 +49,17 @@ export default function CompetitionHeroBar() {
           </p>
 
           {/* Quick telemetry strip */}
-          <div className="flex flex-wrap items-center gap-4 pt-1 text-[11px] text-white/70">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4 pt-1 text-[11px] text-white/70">
             <span className="flex items-center gap-1">
-              <Radio size={12} className="text-pasture-400" /> 128 IoT Sensors Active (ESP32 Gateways)
+              <Radio size={12} className="text-pasture-400 shrink-0" /> 128 IoT Sensors Active (ESP32)
             </span>
             <span className="flex items-center gap-1">
-              <Activity size={12} className="text-signal-blue" /> 99.4% Model Confidence
+              <Activity size={12} className="text-signal-blue shrink-0" /> 99.4% Model Confidence
             </span>
-            <span className="flex items-center gap-1">
-              <ShieldCheck size={12} className="text-emerald-400" /> Target Cow-024:
+            <span className="flex items-center gap-1 break-words">
+              <ShieldCheck size={12} className="text-emerald-400 shrink-0" /> Target COW-024:
               <strong className={targetCow?.riskScore >= 80 ? 'text-signal-red ml-0.5' : 'text-emerald-400 ml-0.5'}>
-                {targetCow?.riskScore || 87}% Risk ({targetCow?.riskLevel?.toUpperCase()} · 48–72h Window)
+                {targetCow?.riskScore || 87}% Risk ({targetCow?.riskLevel?.toUpperCase()} · 48–72h)
               </strong>
             </span>
           </div>

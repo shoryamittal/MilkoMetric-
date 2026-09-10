@@ -7,25 +7,25 @@ export default function EconomicImpactCard({ totalAnimals = 128, highRiskCount =
   const antibioticReductionPct = 89
 
   return (
-    <div className="relative overflow-hidden rounded-lg border border-pasture-300/60 bg-gradient-to-br from-white via-pasture-50/40 to-white p-5 shadow-card">
+    <div className="relative overflow-hidden rounded-lg border border-pasture-300/60 bg-gradient-to-br from-white via-pasture-50/40 to-white p-4 sm:p-5 shadow-card">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-md bg-pasture-600 text-white shadow-sm">
+        <div className="flex items-start sm:items-center gap-2.5 min-w-0 flex-1">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-pasture-600 text-white shadow-sm">
             <TrendingUp size={18} />
           </div>
-          <div>
-            <div className="flex items-center gap-2">
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
               <h3 className="font-display text-base font-semibold text-ink">Economic Safeguard & Projected ROI</h3>
-              <span className="inline-flex items-center gap-1 rounded-full bg-pasture-100 px-2 py-0.5 text-[10.5px] font-semibold text-pasture-700">
+              <span className="inline-flex items-center gap-1 rounded-full bg-pasture-100 px-2 py-0.5 text-[10.5px] font-semibold text-pasture-700 shrink-0">
                 <Sparkles size={11} /> Prescriptive AI
               </span>
             </div>
-            <p className="text-xs text-ink-soft">Quantified savings via 48–72h pre-symptomatic subclinical detection & targeted herd protocols</p>
+            <p className="text-xs text-ink-soft mt-0.5">Quantified savings via 48–72h pre-symptomatic subclinical detection & targeted herd protocols</p>
           </div>
         </div>
-        <div className="flex items-center gap-2 rounded-md border border-line bg-white/80 px-3 py-1.5 text-xs text-ink-soft">
-          <span className="h-2 w-2 rounded-full bg-pasture-600 animate-pulseDot" />
-          SIH26109 Validated ROI Model
+        <div className="flex items-center gap-2 rounded-md border border-line bg-white/80 px-2.5 sm:px-3 py-1.5 text-xs text-ink-soft shrink-0">
+          <span className="h-2 w-2 rounded-full bg-pasture-600 animate-pulseDot shrink-0" />
+          <span>SIH26109 Validated ROI Model</span>
         </div>
       </div>
 

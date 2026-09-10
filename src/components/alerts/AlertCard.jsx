@@ -44,7 +44,7 @@ export default function AlertCard({ alert }) {
         <p className="font-display text-[15px] font-semibold text-ink">{alert.animalId}</p>
         <span className="font-display text-base font-semibold tabular text-ink">{alert.riskScore}%</span>
       </div>
-      <p className="text-xs text-ink-soft">{alert.breed} · Lactation {alert.lactation}</p>
+      <p className="text-xs text-ink-soft truncate">{alert.breed} · Lactation {alert.lactation}</p>
 
       {alert.prevScore != null && (
         <p className="mt-1.5 text-xs text-ink-soft">

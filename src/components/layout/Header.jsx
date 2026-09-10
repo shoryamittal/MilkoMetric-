@@ -53,31 +53,33 @@ export default function Header({ onOpenMobileNav, title, subtitle }) {
   return (
     <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-line bg-canvas-raised/95 px-4 backdrop-blur sm:px-6">
       {/* Left side: mobile menu + Logo / Section context */}
-      <div className="flex min-w-0 items-center gap-3">
+      <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3 mr-2">
         <button
           onClick={onOpenMobileNav}
-          className="rounded-md p-1.5 text-ink-soft hover:bg-canvas-sunken lg:hidden"
+          className="shrink-0 rounded-md p-1.5 text-ink-soft hover:bg-canvas-sunken lg:hidden"
           aria-label="Open menu"
         >
           <Menu size={20} />
         </button>
 
         {/* Section Adaptive Logo in Header */}
-        <div className="flex items-center gap-3">
-          <Logo size={28} withWordmark={false} showSectionBadge={false} />
-          <div className="min-w-0">
+        <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
+          <div className="shrink-0">
+            <Logo size={28} withWordmark={false} showSectionBadge={false} />
+          </div>
+          <div className="min-w-0 flex-1">
             {title ? (
               <>
-                <h1 className="truncate font-display text-[15px] font-semibold leading-tight text-ink sm:text-base">
+                <h1 className="truncate font-display text-sm font-semibold leading-tight text-ink sm:text-base">
                   {title}
                 </h1>
                 {subtitle && <p className="hidden truncate text-xs text-ink-soft sm:block">{subtitle}</p>}
               </>
             ) : (
-              <div>
-                <p className="text-[13px] font-semibold leading-tight text-ink truncate">{currentFarm?.name || 'Shiv Dairy Farm'}</p>
-                <p className="flex items-center gap-1 text-[11px] text-ink-soft truncate">
-                  <MapPin size={10} className="shrink-0" /> {currentFarm?.location || 'Pune, Maharashtra'}
+              <div className="min-w-0">
+                <p className="text-[12.5px] sm:text-[13px] font-semibold leading-tight text-ink truncate">{currentFarm?.name || 'Shiv Dairy Farm'}</p>
+                <p className="flex items-center gap-1 text-[10.5px] sm:text-[11px] text-ink-soft truncate">
+                  <MapPin size={10} className="shrink-0" /> <span className="truncate">{currentFarm?.location || 'Pune, Maharashtra'}</span>
                 </p>
               </div>
             )}
@@ -86,7 +88,7 @@ export default function Header({ onOpenMobileNav, title, subtitle }) {
       </div>
 
       {/* Right side controls: Refresh + Offline Sync + Language + Notifications + User Avatar */}
-      <div className="flex shrink-0 items-center gap-1.5 sm:gap-2.5">
+      <div className="flex shrink-0 items-center gap-1 sm:gap-2">
         {/* Real-time Telemetry Refresh Button */}
         <button
           onClick={handleRefresh}
@@ -95,7 +97,7 @@ export default function Header({ onOpenMobileNav, title, subtitle }) {
             refreshing ? 'opacity-70 pointer-events-none' : ''
           }`}
         >
-          <RefreshCw size={12} className={`text-pasture-700 ${refreshing ? 'animate-spin' : ''}`} />
+          <RefreshCw size={12} className={`text-pasture-700 shrink-0 ${refreshing ? 'animate-spin' : ''}`} />
           <span className="hidden md:inline">
             {language === 'hi' ? 'रिफ्रेश' : language === 'mr' ? 'ताजे करा' : 'Refresh Telemetry'}
           </span>
@@ -105,7 +107,7 @@ export default function Header({ onOpenMobileNav, title, subtitle }) {
         <button
           onClick={toggleNetworkStatus}
           title="Click to simulate Online / Offline transition & Edge Store-and-Forward sync"
-          className={`flex items-center gap-1.5 rounded-full px-2 py-1 sm:px-2.5 text-xs font-medium transition-all ${
+          className={`flex h-8 w-8 sm:h-auto sm:w-auto items-center justify-center gap-1.5 rounded-full sm:px-2.5 sm:py-1 text-xs font-medium transition-all ${
             networkStatus === 'online'
               ? 'border border-pasture-500/30 bg-pasture-50 text-pasture-800 hover:bg-pasture-100'
               : networkStatus === 'offline'
@@ -115,14 +117,14 @@ export default function Header({ onOpenMobileNav, title, subtitle }) {
         >
           {networkStatus === 'online' && (
             <>
-              <span className="h-2 w-2 rounded-full bg-pasture-600 animate-pulse" />
+              <span className="h-2 w-2 rounded-full bg-pasture-600 animate-pulse shrink-0" />
               <span className="hidden sm:inline">Online</span>
               <span className="hidden md:inline text-[10px] opacity-75">· {lastSyncTime}</span>
             </>
           )}
           {networkStatus === 'offline' && (
             <>
-              <WifiOff size={12} className="text-signal-amber" />
+              <WifiOff size={12} className="text-signal-amber shrink-0" />
               <span className="hidden sm:inline">Offline Edge</span>
               {pendingRecords > 0 && (
                 <span className="rounded bg-signal-amber px-1 text-[9.5px] font-bold text-white">
@@ -133,7 +135,7 @@ export default function Header({ onOpenMobileNav, title, subtitle }) {
           )}
           {networkStatus === 'syncing' && (
             <>
-              <RefreshCw size={12} className="animate-spin text-signal-blue" />
+              <RefreshCw size={12} className="animate-spin text-signal-blue shrink-0" />
               <span className="hidden sm:inline">Syncing...</span>
             </>
           )}

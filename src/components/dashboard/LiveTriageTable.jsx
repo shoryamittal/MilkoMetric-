@@ -113,17 +113,19 @@ export default function LiveTriageTable({ animals = [], alerts = [] }) {
                 animal.id === 'COW-024' ? 'bg-pasture-50/40' : ''
               }`}
             >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="font-display text-sm font-bold text-ink">{animal.id}</span>
-                  {animal.id === 'COW-024' && (
-                    <span className="rounded bg-pasture-700 px-1.5 py-0.5 text-[9px] font-bold uppercase text-white">
-                      Target Demo
-                    </span>
-                  )}
-                  <span className="text-xs text-ink-soft">{animal.breed}</span>
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-display text-sm font-bold text-ink">{animal.id}</span>
+                    {animal.id === 'COW-024' && (
+                      <span className="shrink-0 rounded bg-pasture-700 px-1.5 py-0.5 text-[9px] font-bold uppercase text-white">
+                        Target Demo
+                      </span>
+                    )}
+                  </div>
+                  <p className="mt-0.5 text-[11.5px] text-ink-soft truncate max-w-[170px] sm:max-w-none">{animal.breed}</p>
                 </div>
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 shrink-0">
                   <Badge tone={animal.riskLevel}>{animal.riskScore}%</Badge>
                   <button
                     onClick={() => navigate(`/animals/${animal.id}`)}

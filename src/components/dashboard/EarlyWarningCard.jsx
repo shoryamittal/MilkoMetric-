@@ -41,14 +41,14 @@ export default function EarlyWarningCard({ alert, animal }) {
         </div>
       </div>
 
-      <div className="mt-3 flex items-center justify-between">
-        <div>
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-line/50 pt-2.5">
+        <div className="min-w-0">
           <p className="text-[10px] uppercase tracking-wide text-ink-faint">Predicted Subclinical Onset</p>
-          <p className="text-[13px] font-semibold text-pasture-800">{animal.predictedWindow || '48–72 hours'}</p>
+          <p className="text-xs sm:text-[13px] font-semibold text-pasture-800 truncate">{animal.predictedWindow || '48–72 hours'}</p>
         </div>
         <button
           onClick={() => navigate(`/animals/${animal.id}`)}
-          className="flex items-center gap-1 rounded-sm border border-line px-2.5 py-1.5 text-xs font-semibold text-ink hover:bg-canvas-sunken"
+          className="flex items-center gap-1 rounded-sm border border-line px-2.5 py-1.5 text-xs font-semibold text-ink hover:bg-canvas-sunken shrink-0 transition-colors"
         >
           View Animal <ArrowRight size={12} />
         </button>

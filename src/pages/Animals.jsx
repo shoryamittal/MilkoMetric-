@@ -108,22 +108,22 @@ export default function Animals() {
                 onClick={() => navigate(`/animals/${a.id}`)}
                 className="rounded-lg border border-line bg-canvas-raised p-3.5 shadow-sm transition-all active:scale-[0.99] active:bg-canvas-sunken"
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-1.5 min-w-0">
                     <span className="font-display text-base font-bold text-ink">{a.id}</span>
                     {a.id === 'COW-024' && (
-                      <span className="rounded bg-pasture-700 px-1.5 py-0.5 text-[9.5px] font-bold text-white uppercase">
+                      <span className="shrink-0 rounded bg-pasture-700 px-1.5 py-0.5 text-[9.5px] font-bold text-white uppercase">
                         Demo
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5 shrink-0">
                     <Badge tone={a.riskLevel}>{a.riskLabel}</Badge>
-                    <ChevronRight size={16} className="text-ink-faint" />
+                    <ChevronRight size={16} className="text-ink-faint shrink-0" />
                   </div>
                 </div>
 
-                <p className="mt-1 text-xs text-ink-soft">
+                <p className="mt-1 text-xs text-ink-soft truncate">
                   {a.breed} · {a.age} yrs · Lactation {a.lactationNumber}
                 </p>
 
