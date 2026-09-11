@@ -20,14 +20,16 @@ export function detectLanguage(text = '', fallbackLang = 'en') {
   const marathiMarkers = [
     'आहेत', 'आहे', 'नाही', 'सांगा', 'काय', 'कशी', 'कोणत्या', 'गाई', 'जनावरे', 'तपासा', 'करा',
     'कमी', 'जास्त', 'गोठा', 'तापमान', 'दूध', 'धोका', 'तपासून', 'पाहिजे', 'कधी', 'दाखवा', 'मदत',
-    'kiti', 'ahet', 'aahe', 'kay', 'kashi', 'kasa', 'kontya', 'konti', 'dakhav', 'dakhva', 'gai', 'gothatil', 'upay', 'tapasani'
+    'म्हैस', 'म्हैशी', 'शेळी', 'शेळ्या',
+    'kiti', 'ahet', 'aahe', 'kay', 'kashi', 'kasa', 'kontya', 'konti', 'dakhav', 'dakhva', 'gai', 'gothatil', 'upay', 'tapasani', 'mhais', 'sheli'
   ]
 
   // Hindi specific words & markers
   const hindiMarkers = [
     'हैं', 'है', 'कौंसी', 'कौनसे', 'कितने', 'कितना', 'बताओ', 'बताइए', 'क्या', 'गाय', 'गायें', 'पशु', 'बीमार',
     'इलाज', 'अलर्ट', 'हाल', 'दिखाओ', 'जांच', 'दूध', 'रोकथाम', 'मौसम', 'गर्मी', 'मदद', 'कैसे',
-    'kaunse', 'kaunsi', 'kaun', 'kitne', 'kitna', 'kitni', 'batao', 'bataiye', 'kya', 'hai', 'hain', 'bimar', 'kripya', 'dikhaye', 'dekho', 'kaise', 'madad'
+    'भैंस', 'भैंसें', 'बकरी', 'बकरियां',
+    'kaunse', 'kaunsi', 'kaun', 'kitne', 'kitna', 'kitni', 'batao', 'bataiye', 'kya', 'hai', 'hain', 'bimar', 'kripya', 'dikhaye', 'dekho', 'kaise', 'madad', 'bhains', 'bhais', 'bakri'
   ]
 
   for (const m of marathiMarkers) {
@@ -39,7 +41,7 @@ export function detectLanguage(text = '', fallbackLang = 'en') {
 
   // Devanagari script fallback check
   if (/[\u0900-\u097F]/.test(text)) {
-    if (text.includes('आहे') || text.includes('काय') || text.includes('गाई') || text.includes('गोठा')) return 'mr'
+    if (text.includes('आहे') || text.includes('काय') || text.includes('गाई') || text.includes('गोठा') || text.includes('म्हैस') || text.includes('शेळी')) return 'mr'
     return 'hi'
   }
 
@@ -49,20 +51,41 @@ export function detectLanguage(text = '', fallbackLang = 'en') {
 export function extractAnimalId(text = '', animals = [], defaultAnimalId = null) {
   const norm = text.toUpperCase()
 
-  // 1. Direct standard match: COW-XXX or COW XXX
-  const matchDirect = norm.match(/\bCOW[-_ ]?(\d{1,4})\b/i)
+  // 1. Direct standard match: COW-XXX, BUF-XXX, GOT-XXX
+  const matchDirect = norm.match(/\b(COW|BUF|GOT)[-_ ]?(\d{1,4})\b/i)
   if (matchDirect) {
-    const num = matchDirect[1].padStart(3, '0')
-    const target = `COW-${num}`
+    const prefix = matchDirect[1].toUpperCase()
+    const num = matchDirect[2].padStart(3, '0')
+    const target = `${prefix}-${num}`
     const found = animals.find((a) => a.id.toUpperCase() === target)
     if (found) return found.id
-    const rawTarget = `COW-${matchDirect[1]}`
+    const rawTarget = `${prefix}-${matchDirect[2]}`
     const foundRaw = animals.find((a) => a.id.toUpperCase() === rawTarget)
     if (foundRaw) return foundRaw.id
     return target
   }
 
-  // 2. Generic numeric match like "cow 24", "gai 24", "animal 24", "tag 24"
+  // 2. Buffalo specific match: "buffalo 8", "bhains 8", "mhais 8", "bhais 8"
+  const matchBuffalo = norm.match(/(?:BUFFALO|BHAINS|MHAIS|BHAIS|भैंस|म्हैस)\s*#?\s*(\d{1,4})/i)
+  if (matchBuffalo) {
+    const num = matchBuffalo[1].padStart(3, '0')
+    const candidate = `BUF-${num}`
+    const found = animals.find((a) => a.id.toUpperCase() === candidate)
+    if (found) return found.id
+    return candidate
+  }
+
+  // 3. Goat specific match: "goat 4", "bakri 4", "sheli 4"
+  const matchGoat = norm.match(/(?:GOAT|BAKRI|SHELI|बकरी|शेळी)\s*#?\s*(\d{1,4})/i)
+  if (matchGoat) {
+    const num = matchGoat[1].padStart(3, '0')
+    const candidate = `GOT-${num}`
+    const found = animals.find((a) => a.id.toUpperCase() === candidate)
+    if (found) return found.id
+    return candidate
+  }
+
+  // 4. Generic numeric match like "cow 24", "gai 24", "animal 24", "tag 24"
   const matchNum = norm.match(/(?:COW|GAI|ANIMAL|CATTLE|TAG|NUMBER|NO|नंबर|गाय|क्रमांक)\s*#?\s*(\d{1,4})/i)
   if (matchNum) {
     const num = matchNum[1].padStart(3, '0')
@@ -72,10 +95,12 @@ export function extractAnimalId(text = '', animals = [], defaultAnimalId = null)
     return candidate
   }
 
-  // 3. Isolated 2-3 digit number (e.g. "024" or "24")
+  // 5. Isolated 2-3 digit number (e.g. "024" or "008" or "004")
   const matchLoose = norm.match(/\b(0?\d{2,3})\b/)
   if (matchLoose) {
     const num = matchLoose[1].replace(/^0+/, '').padStart(3, '0')
+    const foundAny = animals.find((a) => a.id.endsWith(num))
+    if (foundAny) return foundAny.id
     const candidate = `COW-${num}`
     const found = animals.find((a) => a.id.toUpperCase() === candidate)
     if (found) return found.id
@@ -214,17 +239,19 @@ export function processFarmerQuery(userMessage, state = {}) {
     const id = cow.id
     const score = cow.riskScore || 87
     const level = cow.riskLevel || 'high'
-    const breed = cow.breed || 'Gir Indigenous Cow'
+    const species = cow.species || 'Cow'
+    const emoji = cow.speciesEmoji || (species === 'Buffalo' ? '🐃' : species === 'Goat' ? '🐐' : '🐄')
+    const breed = cow.breed || (species === 'Buffalo' ? 'Murrah Buffalo' : species === 'Goat' ? 'Jamnapari Goat' : 'Gir Cow')
     const lactation = cow.lactationNumber || 3
-    const scc = cow.scc ? `${cow.scc.toLocaleString()} cells/mL (+220% vs baseline)` : '480,000 cells/mL'
+    const scc = cow.scc ? `${cow.scc.toLocaleString()} cells/mL (${species === 'Goat' ? 'Apocrine-adjusted baseline' : '+220% vs baseline'})` : '480,000 cells/mL'
     const temp = `${cow.temperature || 39.2}°C (+0.8°C above baseline)`
-    const conductivity = `${cow.conductivity || 4.6} mS/cm (+28% vs baseline)`
-    const yieldChange = `${cow.milkYieldChangePct || -18}% (14.8 L vs 18.1 L baseline)`
+    const conductivity = `${cow.conductivity || 4.6} mS/cm (${species === 'Buffalo' ? '+24% EC spike & fat loss' : '+28% vs baseline'})`
+    const yieldChange = `${cow.milkYieldChangePct || -18}% (${cow.milkYield || 14.8} L vs baseline)`
     const onset = cow.predictedWindow || '48–72 hours (Subclinical Pre-Symptom Window)'
 
     if (lang === 'hi') {
       return {
-        text: `📊 **${id} (${breed}, वेत ${lactation}) का स्वास्थ्य विश्लेषण:**\n\n- **जोखिम स्कोर**: **${score}%** (${level === 'critical' ? 'गंभीर' : level === 'high' ? 'उच्च जोखिम' : 'मध्यम'})\n- **पूर्वानुमान खिड़की**: **${onset}** (लक्षण दिखने से 48–72 घंटे पूर्व)\n\n**यह गाय जोखिम में क्यों है? (Multi-Signal Anomaly):**\n1. ⚡ **दूध विद्युत चालकता (EC)**: **${conductivity}** — सेल मेम्ब्रेन क्षरण के कारण आयन रिसाव।\n2. 🌡️ **अयन का तापमान**: **${temp}** — उप-नैदानिक सूजन (Micro-inflammation)।\n3. 🥛 **दूध उत्पादन गिरावट**: **${yieldChange}**।\n4. 🔬 **सोमैटिक सेल काउंट (SCC)**: **${scc}**।${offlineBadge}`,
+        text: `📊 **${emoji} ${id} (${species} - ${breed}, वेत ${lactation}) का स्वास्थ्य विश्लेषण:**\n\n- **जोखिम स्कोर**: **${score}%** (${level === 'critical' ? 'गंभीर' : level === 'high' ? 'उच्च जोखिम' : 'मध्यम'})\n- **पूर्वानुमान खिड़की**: **${onset}** (लक्षण दिखने से 48–72 घंटे पूर्व)\n\n**यह ${species === 'Buffalo' ? 'भैंस' : species === 'Goat' ? 'बकरी' : 'गाय'} जोखिम में क्यों है? (Multi-Signal Anomaly):**\n1. ⚡ **दूध विद्युत चालकता (EC)**: **${conductivity}** — सेल मेम्ब्रेन क्षरण के कारण आयन रिसाव।\n2. 🌡️ **अयन का तापमान**: **${temp}** — उप-नैदानिक सूजन (Micro-inflammation)।\n3. 🥛 **दूध उत्पादन गिरावट**: **${yieldChange}**।\n4. 🔬 **सोमैटिक सेल काउंट (SCC)**: **${scc}**।${species === 'Buffalo' ? '\n5. 🧈 **वसा (Fat) में भारी गिरावट**: 7.4% से गिरकर 5.8% (सबक्लिनिकल संकेत)।' : ''}${offlineBadge}`,
         actions: [
           { type: 'navigate', to: `/animals/${id}`, label: `🔍 ${id} का बायो-डेटा और ग्राफ देखें` },
           { type: 'vet_review', animalId: id, label: `🚨 ${id} के लिए डॉक्टर को बुलाएं` },
@@ -234,7 +261,7 @@ export function processFarmerQuery(userMessage, state = {}) {
       }
     } else if (lang === 'mr') {
       return {
-        text: `📊 **${id} (${breed}, वेत क्रमांक ${lactation}) चे आरोग्य विश्लेषण:**\n\n- **धोका निर्देशांक**: **${score}%** (${level === 'critical' ? 'अतिधोकादायक' : level === 'high' ? 'उच्च धोका' : 'सावध'})\n- **संभाव्य लक्षणे**: **${onset}** (लक्षणे दिसण्याआधी ४८ ते ७२ तास पूर्वसूचना)\n\n**या गायीला धोका का आहे? (Multi-Signal Anomaly):**\n1. ⚡ **दुधाची विद्युत वाहकता (EC)**: **${conductivity}** — बेसलाइनपेक्षा जास्त.\n2. 🌡️ **कास/शरीराचे तापमान**: **${temp}** — अंतर्गत दाहकता.\n3. 🥛 **दूध उत्पादनातील घट**: **${yieldChange}**.\n4. 🔬 **सोमॅटिक सेल काउंट (SCC)**: **${scc}**.\n\n*बेसलाइन विश्वासार्हता: १४/१४ नोंदी प्रस्थापित.*${offlineBadge}`,
+        text: `📊 **${emoji} ${id} (${species === 'Buffalo' ? 'म्हैस' : species === 'Goat' ? 'शेळी' : 'गाय'} - ${breed}, वेत क्रमांक ${lactation}) चे आरोग्य विश्लेषण:**\n\n- **धोका निर्देशांक**: **${score}%** (${level === 'critical' ? 'अतिधोकादायक' : level === 'high' ? 'उच्च धोका' : 'सावध'})\n- **संभाव्य लक्षणे**: **${onset}** (लक्षणे दिसण्याआधी ४८ ते ७२ तास पूर्वसूचना)\n\n**या जनावराला धोका का आहे? (Multi-Signal Anomaly):**\n1. ⚡ **दुधाची विद्युत वाहकता (EC)**: **${conductivity}** — बेसलाइनपेक्षा जास्त.\n2. 🌡️ **कास/शरीराचे तापमान**: **${temp}** — अंतर्गत दाहकता.\n3. 🥛 **दूध उत्पादनातील घट**: **${yieldChange}**.\n4. 🔬 **सोमॅटिक सेल काउंट (SCC)**: **${scc}**.\n\n*प्रजाती-आधारित जैविक बेसलाइन नुसार विश्लेषण.*${offlineBadge}`,
         actions: [
           { type: 'navigate', to: `/animals/${id}`, label: `🔍 ${id} ची आकडेवारी पहा` },
           { type: 'vet_review', animalId: id, label: `🚨 ${id} साठी डॉक्टर तपासणी विनंती` },
@@ -244,13 +271,53 @@ export function processFarmerQuery(userMessage, state = {}) {
       }
     } else {
       return {
-        text: `📊 **Health Telemetry & Risk Profile for ${id} (${breed}, Lactation ${lactation}):**\n\n- **Risk Score**: **${score}%** (${level.toUpperCase()})\n- **Subclinical Prediction Window**: **${onset}**\n\n**Why is this animal flagged? (Explainable AI Multi-Signal Fusion):**\n1. ⚡ **Milk Electrical Conductivity (EC)**: **${conductivity}** — tight junction disruption allowing Na+/Cl- blood leakage.\n2. 🌡️ **Udder Skin Temperature**: **${temp}** — subclinical micro-inflammation.\n3. 🥛 **Daily Milk Yield Drop**: **${yieldChange}**.\n4. 🔬 **AI-Estimated SCC**: **${scc}** (Well above 200,000 healthy threshold).\n\n*Baseline calibrated across 14/14 observation milestones.*${offlineBadge}`,
+        text: `📊 **${emoji} Health Telemetry & Risk Profile for ${id} (${species} · ${breed}, Lactation ${lactation}):**\n\n- **Risk Score**: **${score}%** (${level.toUpperCase()})\n- **Subclinical Prediction Window**: **${onset}**\n\n**Why is this animal flagged? (Explainable AI Multi-Signal Fusion):**\n1. ⚡ **Milk Electrical Conductivity (EC)**: **${conductivity}** — ion leakage via cellular membrane disruption.\n2. 🌡️ **Udder Skin Temperature**: **${temp}** — localized pre-clinical inflammation.\n3. 🥛 **Daily Milk Yield Drop**: **${yieldChange}**.\n4. 🔬 **SCC Telemetry**: **${scc}**.\n${species === 'Buffalo' ? '5. 🧈 **Butterfat Depression**: Dropped from 7.4% to 5.8% (severe cooperative penalty risk).\n' : species === 'Goat' ? '5. 🐐 **Apocrine Cytoplasmic Calibration**: Threshold adjusted for natural non-leukocytic particles.\n' : ''}\n*Species baseline calibrated across 14/14 observation milestones.*${offlineBadge}`,
         actions: [
           { type: 'navigate', to: `/animals/${id}`, label: `🔍 View ${id} Baseline & Telemetry` },
           { type: 'vet_review', animalId: id, label: `🚨 Request Vet Review for ${id}` },
           { type: 'navigate', to: '/forecast', label: '⚡ AI Subclinical Forecast' },
         ],
         updatedContext: { lastAnimalId: id },
+      }
+    }
+  }
+
+  // 3.5 MULTI-SPECIES QUERY (BUFFALO / GOAT / MULTI-SPECIES BREAKDOWN)
+  const isMultiSpecies = /\b(species|buffalo|goat|cows|cattle|bhains|bhais|mhais|bakri|sheli|prani|pashudhan|livestock|dairy species)\b/i.test(norm) && !detectedAnimalId
+  if (isMultiSpecies) {
+    const cowCount = animals.filter((a) => a.species === 'Cow').length || 74
+    const bufCount = animals.filter((a) => a.species === 'Buffalo').length || 36
+    const goatCount = animals.filter((a) => a.species === 'Goat').length || 18
+
+    if (lang === 'hi') {
+      return {
+        text: `🐄 **बहु-प्रजाति डेयरी पशुधन टेलीमेट्री (Multi-Species Herd):**\n\nकुल **${animals.length || 128} पशु** 3 डेयरी प्रजातियों में विभाजित हैं:\n\n1. 🐄 **गायें (Dairy Cattle)**: **${cowCount} कुल** | मुख्य डेमो: **COW-024** (गीर, 87% जोखिम, 48–72h खिड़की)\n2. 🐃 **भैंसें (Water Buffaloes)**: **${bufCount} कुल** | मुख्य डेमो: **BUF-008** (मुर्राह, 78% जोखिम, वसा 7.4% ➔ 5.8%)\n3. 🐐 **बकरियां (Dairy Goats)**: **${goatCount} कुल** | मुख्य डेमो: **GOT-004** (जमनापारी, 68% जोखिम, एपोक्राइन समायोजित)\n\n*प्रत्येक प्रजाति के लिए जैविक बेसलाइन (तापमान, चालकता व वसा) अलग से कैलिब्रेटेड हैं।*${offlineBadge}`,
+        actions: [
+          { type: 'navigate', to: '/animals/BUF-008', label: '🐃 BUF-008 (भैंस डेमो)' },
+          { type: 'navigate', to: '/animals/GOT-004', label: '🐐 GOT-004 (बकरी डेमो)' },
+          { type: 'navigate', to: '/animals/COW-024', label: '🐄 COW-024 (गाय डेमो)' },
+        ],
+        updatedContext: { lastAnimalId: 'BUF-008' },
+      }
+    } else if (lang === 'mr') {
+      return {
+        text: `🐄 **बहु-प्रजाती गोठा आरोग्य विश्लेषण (Multi-Species Herd):**\n\nएकूण **${animals.length || 128} जनावरे** ३ प्रजातींमध्ये विभागलेली आहेत:\n\n1. 🐄 **गाई**: **${cowCount}** | मुख्य डेमो: **COW-024** (गीर गाय, ८७% धोका)\n2. 🐃 **म्हशी**: **${bufCount}** | मुख्य डेमो: **BUF-008** (मुऱ्हा, ७८% धोका, फॅट घट)\n3. 🐐 **शेळ्या**: **${goatCount}** | मुख्य डेमो: **GOT-004** (जमनापारी, ६८% धोका)\n\n*म्हशींमध्ये जास्त फॅट व उष्मा ताण, तर शेळ्यांमध्ये अपोक्राइन स्रावाचे विशेष निकष लागू आहेत.*${offlineBadge}`,
+        actions: [
+          { type: 'navigate', to: '/animals/BUF-008', label: '🐃 BUF-008 (म्हैस तपशील)' },
+          { type: 'navigate', to: '/animals/GOT-004', label: '🐐 GOT-004 (शेळी तपशील)' },
+          { type: 'navigate', to: '/animals/COW-024', label: '🐄 COW-024 (गाय तपशील)' },
+        ],
+        updatedContext: { lastAnimalId: 'BUF-008' },
+      }
+    } else {
+      return {
+        text: `🐄 **Multi-Species Dairy Herd Telemetry & Biological Baselines:**\n\nTotal **${animals.length || 128} Head** monitored across 3 distinct dairy species:\n\n1. 🐄 **Dairy Cattle (*Bos indicus / taurus*)**: **${cowCount} Head** | Benchmark Demo: **COW-024** (Gir Cow, 87% High Risk, 48–72h onset)\n2. 🐃 **Water Buffaloes (*Bubalus bubalis*)**: **${bufCount} Head** | Benchmark Demo: **BUF-008** (Murrah Buffalo, 78% Risk, butterfat dropped 7.4% ➔ 5.8%, +24% EC spike)\n3. 🐐 **Dairy Goats (*Capra hircus*)**: **${goatCount} Head** | Benchmark Demo: **GOT-004** (Jamnapari Goat, 68% Risk, apocrine-adjusted SCC)\n\n*Each species features tailored biometric cutoffs for milk EC, temperature, and cellular secretion.*${offlineBadge}`,
+        actions: [
+          { type: 'navigate', to: '/animals/BUF-008', label: '🐃 BUF-008 (Buffalo Demo)' },
+          { type: 'navigate', to: '/animals/GOT-004', label: '🐐 GOT-004 (Goat Demo)' },
+          { type: 'navigate', to: '/animals/COW-024', label: '🐄 COW-024 (Cow Demo)' },
+        ],
+        updatedContext: { lastAnimalId: 'BUF-008' },
       }
     }
   }
@@ -443,34 +510,40 @@ export function processFarmerQuery(userMessage, state = {}) {
   // 9. DEFAULT / HERD SUMMARY
   const total = animals.length || 128
   const healthy = total - requiringActionCount - watchAnimals.length
+  const cowsTotal = animals.filter((a) => a.species === 'Cow').length || 74
+  const bufTotal = animals.filter((a) => a.species === 'Buffalo').length || 36
+  const goatTotal = animals.filter((a) => a.species === 'Goat').length || 18
 
   if (lang === 'hi') {
     return {
-      text: `🐄 **शिव डेयरी फार्म — संपूर्ण पशुधन स्थिति:**\n\n- 📊 **कुल निगरानी में पशु**: **${total}**\n- 🟢 **स्वस्थ पशु**: **${healthy}** (85.2%)\n- 🟡 **वॉचलिस्ट (मध्यम)**: **${watchAnimals.length}**\n- 🔴 **उच्च जोखिम (High Risk)**: **${highRiskAnimals.length}**\n- 🚨 **गंभीर (Critical)**: **${criticalAnimals.length}**\n- ⚡ **तत्काल ध्यान देने योग्य**: **${requiringActionCount} पशु** (उदा. **COW-024**)\n\n*आप किसी विशेष गाय (उदा. COW-024), THI तापमान, या डॉक्टर परामर्श के बारे में पूछ सकते हैं।*${offlineBadge}`,
+      text: `🐄 **शिव डेयरी फार्म — संपूर्ण बहु-प्रजाति पशुधन स्थिति:**\n\n- 📊 **कुल निगरानी में पशु**: **${total}** (🐄 ${cowsTotal} गायें, 🐃 ${bufTotal} भैंसें, 🐐 ${goatTotal} बकरियां)\n- 🟢 **स्वस्थ पशु**: **${healthy}** (${Math.round((healthy / total) * 100)}%)\n- 🟡 **वॉचलिस्ट (मध्यम)**: **${watchAnimals.length}**\n- 🔴 **उच्च जोखिम (High Risk)**: **${highRiskAnimals.length}**\n- 🚨 **गंभीर (Critical)**: **${criticalAnimals.length}**\n- ⚡ **तत्काल ध्यान देने योग्य**: **${requiringActionCount} पशु** (उदा. **COW-024**, **BUF-008**)\n\n*आप किसी भी गाय (COW-024), भैंस (BUF-008), या बकरी (GOT-004) की रिपोर्ट पूछ सकते हैं।*${offlineBadge}`,
       actions: [
-        { type: 'navigate', to: '/animals/COW-024', label: '🔍 COW-024 की रिपोर्ट देखें' },
+        { type: 'navigate', to: '/animals/COW-024', label: '🐄 COW-024 (गाय)' },
+        { type: 'navigate', to: '/animals/BUF-008', label: '🐃 BUF-008 (भैंस)' },
+        { type: 'navigate', to: '/animals/GOT-004', label: '🐐 GOT-004 (बकरी)' },
         { type: 'navigate', to: '/forecast', label: '⚡ 48–72h AI पूर्वानुमान' },
-        { type: 'navigate', to: '/alerts', label: '🚨 सक्रिय अलर्ट केंद्र' },
       ],
       updatedContext: { lastAnimalId: 'COW-024' },
     }
   } else if (lang === 'mr') {
     return {
-      text: `🐄 **शिव डेअरी फार्म — एकूण गोठा स्थिती:**\n\n- 📊 **एकूण नोंदणीकृत जनावरे**: **${total}**\n- 🟢 **निरोगी जनावरे**: **${healthy}**\n- 🟡 **मध्यम धोका**: **${watchAnimals.length}**\n- 🔴 **उच्च धोका**: **${highRiskAnimals.length}**\n- 🚨 **अतिधोकादायक**: **${criticalAnimals.length}**\n- ⚡ **तातडीने लक्ष देण्याची गरज**: **${requiringActionCount} जनावरे** (उदा. **COW-024**)\n\n*तुम्ही कोणत्याही गायीबद्दल (उदा. COW-024), हवामानाबद्दल किंवा डॉक्टरांच्या सल्ल्याबद्दल विचारू शकता.*${offlineBadge}`,
+      text: `🐄 **शिव डेअरी फार्म — एकूण बहु-प्रजाती गोठा स्थिती:**\n\n- 📊 **एकूण नोंदणीकृत जनावरे**: **${total}** (🐄 ${cowsTotal} गाई, 🐃 ${bufTotal} म्हशी, 🐐 ${goatTotal} शेळ्या)\n- 🟢 **निरोगी जनावरे**: **${healthy}** (${Math.round((healthy / total) * 100)}%)\n- 🟡 **मध्यम धोका**: **${watchAnimals.length}**\n- 🔴 **उच्च धोका**: **${highRiskAnimals.length}**\n- 🚨 **अतिधोकादायक**: **${criticalAnimals.length}**\n- ⚡ **तातडीने लक्ष देण्याची गरज**: **${requiringActionCount} जनावरे** (उदा. **COW-024**, **BUF-008**)\n\n*कोणत्याही जनावराच्या (COW-024 / BUF-008 / GOT-004) आरोग्य स्थितीबद्दल विचारा.*${offlineBadge}`,
       actions: [
-        { type: 'navigate', to: '/animals/COW-024', label: '🔍 COW-024 पहा' },
-        { type: 'navigate', to: '/forecast', label: '⚡ ४८–७२ तास AI अंदाज' },
+        { type: 'navigate', to: '/animals/COW-024', label: '🐄 COW-024 (गाय)' },
+        { type: 'navigate', to: '/animals/BUF-008', label: '🐃 BUF-008 (म्हैस)' },
+        { type: 'navigate', to: '/animals/GOT-004', label: '🐐 GOT-004 (शेळी)' },
         { type: 'navigate', to: '/alerts', label: '🚨 सर्व इशारे पहा' },
       ],
       updatedContext: { lastAnimalId: 'COW-024' },
     }
   } else {
     return {
-      text: `🐄 **Shiv Dairy Farm — Herd Health Intelligence:**\n\n- 📊 **Total Monitored**: **${total} Cattle**\n- 🟢 **Healthy Herd**: **${healthy}** (85.2%)\n- 🟡 **Watchlist (Moderate)**: **${watchAnimals.length}**\n- 🔴 **High Risk**: **${highRiskAnimals.length}**\n- 🚨 **Critical**: **${criticalAnimals.length}**\n- ⚡ **Requiring Attention**: **${requiringActionCount} Cattle** (e.g. **COW-024**)\n\n*Ask me about any cow (e.g. "Why is COW-024 at risk?"), THI heat stress, offline sensors, or request a veterinary tele-dossier.*${offlineBadge}`,
+      text: `🐄 **Shiv Dairy Farm — Multi-Species Herd Health Intelligence:**\n\n- 📊 **Total Monitored**: **${total} Head** (🐄 ${cowsTotal} Cattle, 🐃 ${bufTotal} Water Buffaloes, 🐐 ${goatTotal} Dairy Goats)\n- 🟢 **Healthy Herd**: **${healthy}** (${Math.round((healthy / total) * 100)}%)\n- 🟡 **Watchlist (Moderate)**: **${watchAnimals.length}**\n- 🔴 **High Risk**: **${highRiskAnimals.length}**\n- 🚨 **Critical**: **${criticalAnimals.length}**\n- ⚡ **Requiring Attention**: **${requiringActionCount} Head** (e.g. **COW-024**, **BUF-008**, **GOT-004**)\n\n*Ask me about any animal (e.g. "How is BUF-008?" or "Why is COW-024 at risk?"), multi-species telemetry, or request a veterinary tele-dossier.*${offlineBadge}`,
       actions: [
-        { type: 'navigate', to: '/animals/COW-024', label: '🔍 Inspect COW-024 Dossier' },
+        { type: 'navigate', to: '/animals/COW-024', label: '🐄 COW-024 (Cow Demo)' },
+        { type: 'navigate', to: '/animals/BUF-008', label: '🐃 BUF-008 (Buffalo Demo)' },
+        { type: 'navigate', to: '/animals/GOT-004', label: '🐐 GOT-004 (Goat Demo)' },
         { type: 'navigate', to: '/forecast', label: '⚡ AI Subclinical Forecast' },
-        { type: 'navigate', to: '/alerts', label: '🚨 View Active Alerts' },
       ],
       updatedContext: { lastAnimalId: 'COW-024' },
     }

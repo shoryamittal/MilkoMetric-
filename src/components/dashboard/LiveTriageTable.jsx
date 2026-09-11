@@ -8,15 +8,18 @@ export default function LiveTriageTable({ animals = [], alerts = [] }) {
   const navigate = useNavigate()
   const { showToast } = useApp()
   const [filter, setFilter] = useState('high_risk')
+  const [speciesFilter, setSpeciesFilter] = useState('All')
   const [actionSuccess, setActionSuccess] = useState({})
+
+  const speciesMatches = (a) => speciesFilter === 'All' || a.species === speciesFilter
 
   // Filter animals that need immediate clinical attention
   const highRiskAnimals = animals.filter(
-    (a) => a.riskLevel === 'critical' || a.riskLevel === 'high' || a.riskScore >= 60
+    (a) => (a.riskLevel === 'critical' || a.riskLevel === 'high' || a.riskScore >= 60) && speciesMatches(a)
   ).sort((a, b) => b.riskScore - a.riskScore)
 
   const moderateAnimals = animals.filter(
-    (a) => a.riskLevel === 'moderate'
+    (a) => a.riskLevel === 'moderate' && speciesMatches(a)
   ).sort((a, b) => b.riskScore - a.riskScore)
 
   const displayedList = filter === 'critical'
@@ -68,36 +71,59 @@ export default function LiveTriageTable({ animals = [], alerts = [] }) {
             </span>
           </div>
           <p className="mt-0.5 text-xs text-ink-soft">
-            Priority triage based on multi-parameter sensor spikes (SCC, Conductivity, Udder Temp)
+            Multi-species priority triage (Cattle · Buffaloes · Goats) based on sensor spikes
           </p>
         </div>
 
-        {/* Filter tabs with horizontal scroll on phone */}
-        <div className="flex items-center rounded-md border border-line bg-canvas p-0.5 text-xs font-medium text-ink-soft overflow-x-auto no-scrollbar flex-nowrap w-full sm:w-auto">
-          <button
-            onClick={() => setFilter('high_risk')}
-            className={`shrink-0 rounded px-2.5 py-1 transition-colors ${
-              filter === 'high_risk' ? 'bg-white font-semibold text-ink shadow-sm' : 'hover:text-ink'
-            }`}
-          >
-            All Urgent ({highRiskAnimals.length})
-          </button>
-          <button
-            onClick={() => setFilter('critical')}
-            className={`shrink-0 rounded px-2.5 py-1 transition-colors ${
-              filter === 'critical' ? 'bg-white font-semibold text-signal-red shadow-sm' : 'hover:text-ink'
-            }`}
-          >
-            Critical Only ({highRiskAnimals.filter((a) => a.riskLevel === 'critical').length})
-          </button>
-          <button
-            onClick={() => setFilter('moderate')}
-            className={`shrink-0 rounded px-2.5 py-1 transition-colors ${
-              filter === 'moderate' ? 'bg-white font-semibold text-signal-amber shadow-sm' : 'hover:text-ink'
-            }`}
-          >
-            Moderate ({moderateAnimals.length})
-          </button>
+        {/* Filter controls: Species selector & Severity selector */}
+        <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+          {/* Species tabs */}
+          <div className="flex items-center rounded-md border border-line bg-canvas p-0.5 text-xs font-medium text-ink-soft overflow-x-auto no-scrollbar">
+            {[
+              { key: 'All', label: 'All Species' },
+              { key: 'Cow', label: '🐄 Cows' },
+              { key: 'Buffalo', label: '🐃 Buffaloes' },
+              { key: 'Goat', label: '🐐 Goats' },
+            ].map((sp) => (
+              <button
+                key={sp.key}
+                onClick={() => setSpeciesFilter(sp.key)}
+                className={`shrink-0 rounded px-2 py-1 transition-colors text-[11px] ${
+                  speciesFilter === sp.key ? 'bg-pasture-700 font-semibold text-white shadow-xs' : 'hover:text-ink'
+                }`}
+              >
+                {sp.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Severity tabs */}
+          <div className="flex items-center rounded-md border border-line bg-canvas p-0.5 text-xs font-medium text-ink-soft overflow-x-auto no-scrollbar">
+            <button
+              onClick={() => setFilter('high_risk')}
+              className={`shrink-0 rounded px-2.5 py-1 transition-colors text-[11px] ${
+                filter === 'high_risk' ? 'bg-white font-semibold text-ink shadow-sm' : 'hover:text-ink'
+              }`}
+            >
+              All Urgent ({highRiskAnimals.length})
+            </button>
+            <button
+              onClick={() => setFilter('critical')}
+              className={`shrink-0 rounded px-2.5 py-1 transition-colors text-[11px] ${
+                filter === 'critical' ? 'bg-white font-semibold text-signal-red shadow-sm' : 'hover:text-ink'
+              }`}
+            >
+              Critical ({highRiskAnimals.filter((a) => a.riskLevel === 'critical').length})
+            </button>
+            <button
+              onClick={() => setFilter('moderate')}
+              className={`shrink-0 rounded px-2.5 py-1 transition-colors text-[11px] ${
+                filter === 'moderate' ? 'bg-white font-semibold text-signal-amber shadow-sm' : 'hover:text-ink'
+              }`}
+            >
+              Moderate ({moderateAnimals.length})
+            </button>
+          </div>
         </div>
       </div>
 
@@ -115,11 +141,25 @@ export default function LiveTriageTable({ animals = [], alerts = [] }) {
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-sm">{animal.speciesEmoji || '🐄'}</span>
                     <span className="font-display text-sm font-bold text-ink">{animal.id}</span>
+                    <span className="rounded bg-canvas-sunken px-1.5 py-0.2 text-[10px] text-ink-soft">
+                      {animal.species || 'Cow'}
+                    </span>
                     {animal.id === 'COW-024' && (
                       <span className="shrink-0 rounded bg-pasture-700 px-1.5 py-0.5 text-[9px] font-bold uppercase text-white">
-                        Target Demo
+                        Target Cow Demo
+                      </span>
+                    )}
+                    {animal.id === 'BUF-008' && (
+                      <span className="shrink-0 rounded bg-signal-blue px-1.5 py-0.5 text-[9px] font-bold uppercase text-white">
+                        Buffalo Demo
+                      </span>
+                    )}
+                    {animal.id === 'GOT-004' && (
+                      <span className="shrink-0 rounded bg-signal-amber px-1.5 py-0.5 text-[9px] font-bold uppercase text-white">
+                        Goat Demo
                       </span>
                     )}
                   </div>
@@ -218,10 +258,24 @@ export default function LiveTriageTable({ animals = [], alerts = [] }) {
                 >
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-2">
+                      <span className="text-sm">{animal.speciesEmoji || '🐄'}</span>
                       <span className="font-display text-[13px] font-bold text-ink">{animal.id}</span>
+                      <span className="rounded bg-canvas-sunken px-1.5 py-0.5 text-[10px] text-ink-soft">
+                        {animal.species || 'Cow'}
+                      </span>
                       {animal.id === 'COW-024' && (
-                        <span className="rounded bg-pasture-600 px-1.5 py-0.5 text-[9.5px] font-bold uppercase text-white">
+                        <span className="rounded bg-pasture-600 px-1.5 py-0.5 text-[9px] font-bold uppercase text-white">
                           Target Demo
+                        </span>
+                      )}
+                      {animal.id === 'BUF-008' && (
+                        <span className="rounded bg-signal-blue px-1.5 py-0.5 text-[9px] font-bold uppercase text-white">
+                          Buffalo Demo
+                        </span>
+                      )}
+                      {animal.id === 'GOT-004' && (
+                        <span className="rounded bg-signal-amber px-1.5 py-0.5 text-[9px] font-bold uppercase text-white">
+                          Goat Demo
                         </span>
                       )}
                     </div>

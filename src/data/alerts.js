@@ -14,9 +14,13 @@ function reasonFor(animal) {
 
 let counter = 1
 function makeAlert(animal, minutesAgo, status = 'active', prevScore = null) {
+  if (!animal) return null
   return {
     id: `ALT-${String(counter++).padStart(3, '0')}`,
     animalId: animal.id,
+    species: animal.species || 'Cow',
+    speciesEmoji: animal.speciesEmoji || '🐄',
+    speciesLabel: animal.speciesLabel || 'Cattle / Cow',
     severity: severityForLevel(animal.riskLevel),
     riskScore: animal.riskScore,
     prevScore,
@@ -30,17 +34,21 @@ function makeAlert(animal, minutesAgo, status = 'active', prevScore = null) {
 }
 
 const flagged = ANIMALS.filter((a) => a.riskLevel === 'high' || a.riskLevel === 'critical')
+const bufAlert = getAnimalById('BUF-008')
+const gotAlert = getAnimalById('GOT-004')
 
 export const INITIAL_ALERTS = [
   makeAlert(getAnimalById('COW-024'), 2, 'active', 64),
+  ...(bufAlert ? [makeAlert(bufAlert, 8, 'active', 58)] : []),
+  ...(gotAlert ? [makeAlert(gotAlert, 15, 'active', 52)] : []),
   ...flagged
-    .filter((a) => a.id !== 'COW-024')
-    .slice(0, 9)
-    .map((a, i) => makeAlert(a, 12 + i * 17, 'active')),
+    .filter((a) => a.id !== 'COW-024' && a.id !== 'BUF-008' && a.id !== 'GOT-004')
+    .slice(0, 7)
+    .map((a, i) => makeAlert(a, 20 + i * 17, 'active')),
   ...ANIMALS.filter((a) => a.riskLevel === 'moderate')
     .slice(0, 4)
     .map((a, i) => makeAlert(a, 40 + i * 25, 'active')),
   makeAlert(ANIMALS[2], 60 * 6, 'resolved'),
   makeAlert(ANIMALS[9], 60 * 20, 'resolved'),
   makeAlert(ANIMALS[15], 60 * 30, 'resolved'),
-]
+].filter(Boolean)

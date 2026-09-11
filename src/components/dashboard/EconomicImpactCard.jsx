@@ -32,13 +32,15 @@ export default function EconomicImpactCard({ totalAnimals = 128, highRiskCount =
       <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-md border border-pasture-300/80 bg-pasture-50/50 p-3.5 shadow-sm">
           <div className="flex items-center justify-between text-xs text-ink-soft">
-            <span className="font-semibold text-pasture-800">Per-Cow Savings Benchmark</span>
-            <span className="rounded bg-pasture-200/80 px-1.5 py-0.5 text-[10px] font-bold text-pasture-800">PPT Core Fact</span>
+            <span className="font-semibold text-pasture-800">Multi-Species Savings</span>
+            <span className="rounded bg-pasture-200/80 px-1.5 py-0.5 text-[10px] font-bold text-pasture-800">SIH Core ROI</span>
           </div>
-          <p className="mt-2 font-display text-2xl font-bold text-pasture-700 tabular">
-            ₹6,000–₹10,000
+          <p className="mt-2 font-display text-xl sm:text-2xl font-bold text-pasture-700 tabular">
+            ₹6,000–₹13,000
           </p>
-          <p className="mt-1 text-[11px] text-ink-soft">Per affected cow/lactation (avoids dump, vet fees & yield crash)</p>
+          <p className="mt-1 text-[11px] text-ink-soft leading-tight">
+            🐄 Cow: ₹6k–₹10k · 🐃 Buffalo: ₹8k–₹13k · 🐐 Goat: ₹1.5k–₹2.5k
+          </p>
         </div>
 
         <div className="rounded-md border border-line/80 bg-white p-3.5 shadow-sm">

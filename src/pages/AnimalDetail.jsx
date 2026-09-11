@@ -69,11 +69,11 @@ export default function AnimalDetail() {
     // Established baseline vs developing
     const isEstablished = animal.lactationNumber >= 2
     const observationsCount = isEstablished ? 14 : 8
-    const baseEC = 4.2
-    const currentEC = 4.2 * (1 + (animal.conductivity || 0) / 100)
+    const baseEC = animal.species === 'Buffalo' ? 4.8 : 4.2
+    const currentEC = baseEC * (1 + (animal.conductivity || 0) / 100)
     const ecDeviation = animal.conductivity || 0
 
-    const baseTemp = 38.4
+    const baseTemp = animal.species === 'Buffalo' ? 38.1 : animal.species === 'Goat' ? 39.0 : 38.4
     const currentTemp = animal.temperature
     const tempDeviation = +(currentTemp - baseTemp).toFixed(1)
 
@@ -113,16 +113,10 @@ export default function AnimalDetail() {
     return (
       <EmptyState
         icon={ShieldQuestion}
-        title="Animal not found"
-        description={`No record matches "${id}" in this herd.`}
-        action={
-          <button
-            onClick={() => navigate('/animals')}
-            className="rounded-md bg-pasture-700 px-4 py-2 text-sm font-semibold text-white hover:bg-pasture-600"
-          >
-            Back to Animals
-          </button>
-        }
+        title="Animal Not Found"
+        description={`No livestock record exists for tag ID "${id}". Verify RFID ear tag or select an active animal.`}
+        actionLabel="Return to Herd Directory"
+        onAction={() => navigate('/animals')}
       />
     )
   }
@@ -175,12 +169,29 @@ export default function AnimalDetail() {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <div className="flex items-center gap-2 sm:gap-3">
+            <span className="text-2xl sm:text-3xl">{animal.speciesEmoji || (animal.species === 'Buffalo' ? '🐃' : animal.species === 'Goat' ? '🐐' : '🐄')}</span>
             <h1 className="font-display text-xl font-bold text-ink sm:text-3xl">{animal.id}</h1>
             <Badge tone={animal.riskLevel} className="text-[11px] sm:text-xs font-bold uppercase">
               {animal.riskLevel === 'critical' ? 'CRITICAL' : animal.riskLevel === 'high' ? 'HIGH' : animal.riskLevel === 'moderate' ? 'WATCH' : 'LOW'}
             </Badge>
+            {animal.id === 'COW-024' && (
+              <span className="rounded bg-pasture-700 px-2 py-0.5 text-[10.5px] font-bold text-white uppercase">
+                Cow Demo Case
+              </span>
+            )}
+            {animal.id === 'BUF-008' && (
+              <span className="rounded bg-pasture-700 px-2 py-0.5 text-[10.5px] font-bold text-white uppercase">
+                Buffalo Demo Case
+              </span>
+            )}
+            {animal.id === 'GOT-004' && (
+              <span className="rounded bg-pasture-700 px-2 py-0.5 text-[10.5px] font-bold text-white uppercase">
+                Goat Demo Case
+              </span>
+            )}
           </div>
           <p className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-ink-soft">
+            <span className="rounded bg-canvas-sunken px-1.5 py-0.5 font-medium text-ink">{animal.species}</span>
             <span className="rounded bg-canvas-sunken px-1.5 py-0.5 text-ink">{animal.breed}</span>
             <span className="rounded bg-canvas-sunken px-1.5 py-0.5 text-ink">{animal.age} Yrs</span>
             <span className="rounded bg-canvas-sunken px-1.5 py-0.5 text-ink">Lactation {animal.lactationNumber}</span>
@@ -224,7 +235,14 @@ export default function AnimalDetail() {
         <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5 xl:col-span-8 sm:grid-cols-3">
           {[
             { icon: Zap, label: 'Milk EC (In-Line)', value: `${baseline.currentEC} mS/cm`, delta: baseline.ecDeviation, unit: '%', alert: baseline.ecDeviation > 15 },
-            { icon: Droplets, label: 'AI-Estimated SCC', value: `${Math.round(animal.scc / 1000)}k cells/mL`, delta: Math.round(((animal.scc - 150000) / 150000) * 100), unit: '%', alert: animal.scc > 300000 },
+            {
+              icon: Droplets,
+              label: animal.species === 'Goat' ? 'Apocrine-Adjusted SCC' : 'AI-Estimated SCC',
+              value: `${Math.round(animal.scc / 1000)}k cells/mL`,
+              delta: Math.round(((animal.scc - (animal.species === 'Goat' ? 500000 : 150000)) / (animal.species === 'Goat' ? 500000 : 150000)) * 100),
+              unit: '%',
+              alert: animal.species === 'Goat' ? animal.scc > 900000 : animal.scc > 300000,
+            },
             { icon: Thermometer, label: 'Udder Temperature', value: `${animal.temperature}°C`, delta: baseline.tempDeviation, unit: '°C', signed: true, alert: baseline.tempDeviation > 0.6 },
             { icon: Milk, label: 'Daily Milk Yield', value: `${animal.milkYield} L/day`, delta: animal.milkYieldChangePct, unit: '%', alert: animal.milkYieldChangePct < -10 },
             { icon: ActivityIcon, label: 'Activity Level', value: `${animal.activity > 0 ? '+' : ''}${animal.activity}%`, delta: animal.activity, unit: '%' },

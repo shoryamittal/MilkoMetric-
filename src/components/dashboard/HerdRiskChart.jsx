@@ -23,9 +23,26 @@ function CustomTooltip({ active, payload }) {
   )
 }
 
-export default function HerdRiskChart() {
+export default function HerdRiskChart({ animals: propAnimals }) {
   const [active, setActive] = useState(null)
-  const healthyPct = Math.round(((HERD_SUMMARY.noRisk + HERD_SUMMARY.low) / HERD_SUMMARY.total) * 100)
+  const list = propAnimals && propAnimals.length ? propAnimals : null
+
+  const noRisk = list ? list.filter((a) => a.riskLevel === 'none').length : HERD_SUMMARY.noRisk
+  const low = list ? list.filter((a) => a.riskLevel === 'low').length : HERD_SUMMARY.low
+  const moderate = list ? list.filter((a) => a.riskLevel === 'moderate').length : HERD_SUMMARY.moderate
+  const high = list ? list.filter((a) => a.riskLevel === 'high').length : HERD_SUMMARY.high
+  const critical = list ? list.filter((a) => a.riskLevel === 'critical').length : HERD_SUMMARY.critical
+  const total = (noRisk + low + moderate + high + critical) || 1
+
+  const segments = [
+    { key: 'noRisk', label: 'No Risk', color: '#3E7C52', value: noRisk },
+    { key: 'low', label: 'Low Risk', color: '#9AC3A0', value: low },
+    { key: 'moderate', label: 'Moderate', color: '#D79A3B', value: moderate },
+    { key: 'high', label: 'High', color: '#C4571F', value: high },
+    { key: 'critical', label: 'Critical', color: '#7E1F1B', value: critical },
+  ]
+
+  const healthyPct = Math.round(((noRisk + low) / total) * 100)
 
   return (
     <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-center">
@@ -33,7 +50,7 @@ export default function HerdRiskChart() {
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
-              data={SEGMENTS}
+              data={segments}
               dataKey="value"
               nameKey="label"
               innerRadius={72}
@@ -43,22 +60,35 @@ export default function HerdRiskChart() {
               onMouseEnter={(_, idx) => setActive(idx)}
               onMouseLeave={() => setActive(null)}
             >
-              {SEGMENTS.map((s, idx) => (
+              {segments.map((s, idx) => (
                 <Cell key={s.key} fill={s.color} opacity={active === null || active === idx ? 1 : 0.35} />
               ))}
             </Pie>
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip
+              content={({ active, payload }) => {
+                if (!active || !payload?.length) return null
+                const d = payload[0].payload
+                return (
+                  <div className="rounded-sm border border-line bg-canvas-raised px-3 py-2 text-xs shadow-pop">
+                    <p className="font-semibold text-ink">{d.label}</p>
+                    <p className="text-ink-soft">
+                      {d.value} animals · {Math.round((d.value / total) * 100)}%
+                    </p>
+                  </div>
+                )
+              }}
+            />
           </PieChart>
         </ResponsiveContainer>
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
           <span className="font-display text-3xl font-semibold text-ink tabular">{healthyPct}%</span>
           <span className="text-xs text-ink-soft">Healthy</span>
-          <span className="mt-1 text-[11px] text-ink-faint">{HERD_SUMMARY.total} Animals</span>
+          <span className="mt-1 text-[11px] text-ink-faint">{total} Head</span>
         </div>
       </div>
 
       <div className="grid w-full grid-cols-2 gap-x-6 gap-y-3 sm:w-auto">
-        {SEGMENTS.map((s, idx) => (
+        {segments.map((s, idx) => (
           <button
             key={s.key}
             onMouseEnter={() => setActive(idx)}

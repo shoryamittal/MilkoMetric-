@@ -2,9 +2,16 @@ import React, { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Search, ChevronRight, ArrowUpDown } from 'lucide-react'
 import { useApp } from '../context/AppContext.jsx'
-import { BREEDS } from '../data/animals.js'
+import { BREEDS, COW_BREEDS, BUFFALO_BREEDS, GOAT_BREEDS } from '../data/animals.js'
 import Badge from '../components/common/Badge.jsx'
 import EmptyState from '../components/common/EmptyState.jsx'
+
+const SPECIES_OPTIONS = [
+  { value: 'all', label: 'All Species' },
+  { value: 'Cow', label: '🐄 Cattle (74)' },
+  { value: 'Buffalo', label: '🐃 Buffalo (36)' },
+  { value: 'Goat', label: '🐐 Goats (18)' },
+]
 
 const RISK_OPTIONS = [
   { value: 'all', label: 'All Risk Levels' },
@@ -41,14 +48,28 @@ export default function Animals() {
   const { animals } = useApp()
   const navigate = useNavigate()
   const [query, setQuery] = useState('')
+  const [species, setSpecies] = useState('all')
   const [risk, setRisk] = useState('all')
   const [breed, setBreed] = useState('all')
   const [lactation, setLactation] = useState('all')
   const [sort, setSort] = useState('riskDesc')
 
+  const availableBreeds = useMemo(() => {
+    if (species === 'Cow') return COW_BREEDS
+    if (species === 'Buffalo') return BUFFALO_BREEDS
+    if (species === 'Goat') return GOAT_BREEDS
+    return BREEDS
+  }, [species])
+
+  const handleSpeciesChange = (val) => {
+    setSpecies(val)
+    setBreed('all')
+  }
+
   const filtered = useMemo(() => {
     let list = animals.filter((a) => {
       if (query && !a.id.toLowerCase().includes(query.toLowerCase())) return false
+      if (species !== 'all' && a.species !== species) return false
       if (risk !== 'all' && a.riskLevel !== risk) return false
       if (breed !== 'all' && a.breed !== breed) return false
       if (lactation !== 'all' && String(a.lactationNumber) !== lactation) return false
@@ -61,7 +82,7 @@ export default function Animals() {
       yieldAsc: (a, b) => a.milkYield - b.milkYield,
     }
     return list.sort(sorters[sort])
-  }, [animals, query, risk, breed, lactation, sort])
+  }, [animals, query, species, risk, breed, lactation, sort])
 
   return (
     <div className="space-y-5">
@@ -71,21 +92,26 @@ export default function Animals() {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by Animal ID (e.g. COW-024)..."
+            placeholder="Search by Animal ID (e.g. COW-024, BUF-008, GOT-004)..."
             className="w-full rounded-md border border-line bg-canvas py-2 pl-8 pr-3 text-[13px] text-ink placeholder:text-ink-faint focus:border-pasture-500"
           />
         </div>
 
         {/* Filters in 2x2 grid on phone, inline flex on tablet/desktop */}
         <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-2.5">
+          <Select value={species} onChange={handleSpeciesChange} options={SPECIES_OPTIONS} />
           <Select value={risk} onChange={setRisk} options={RISK_OPTIONS} />
-          <Select value={breed} onChange={setBreed} options={[{ value: 'all', label: 'All Breeds' }, ...BREEDS.map((b) => ({ value: b, label: b }))]} />
+          <Select
+            value={breed}
+            onChange={setBreed}
+            options={[{ value: 'all', label: 'All Breeds' }, ...availableBreeds.map((b) => ({ value: b, label: b }))]}
+          />
           <Select
             value={lactation}
             onChange={setLactation}
             options={[{ value: 'all', label: 'All Lactations' }, ...[1, 2, 3, 4, 5].map((n) => ({ value: String(n), label: `Lactation ${n}` }))]}
           />
-          <div className="flex items-center gap-1.5 sm:ml-auto">
+          <div className="flex items-center gap-1.5 sm:ml-auto col-span-2 sm:col-span-1">
             <ArrowUpDown size={13} className="text-ink-faint hidden sm:inline" />
             <Select value={sort} onChange={setSort} options={SORTS} />
           </div>
@@ -110,10 +136,21 @@ export default function Animals() {
               >
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-1.5 min-w-0">
+                    <span className="text-base">{a.speciesEmoji || (a.species === 'Buffalo' ? '🐃' : a.species === 'Goat' ? '🐐' : '🐄')}</span>
                     <span className="font-display text-base font-bold text-ink">{a.id}</span>
                     {a.id === 'COW-024' && (
                       <span className="shrink-0 rounded bg-pasture-700 px-1.5 py-0.5 text-[9.5px] font-bold text-white uppercase">
-                        Demo
+                        Cow Demo
+                      </span>
+                    )}
+                    {a.id === 'BUF-008' && (
+                      <span className="shrink-0 rounded bg-pasture-700 px-1.5 py-0.5 text-[9.5px] font-bold text-white uppercase">
+                        Buffalo Demo
+                      </span>
+                    )}
+                    {a.id === 'GOT-004' && (
+                      <span className="shrink-0 rounded bg-pasture-700 px-1.5 py-0.5 text-[9.5px] font-bold text-white uppercase">
+                        Goat Demo
                       </span>
                     )}
                   </div>
@@ -124,7 +161,7 @@ export default function Animals() {
                 </div>
 
                 <p className="mt-1 text-xs text-ink-soft truncate">
-                  {a.breed} · {a.age} yrs · Lactation {a.lactationNumber}
+                  {a.species} · {a.breed} · {a.age} yrs · Lactation {a.lactationNumber}
                 </p>
 
                 {/* 4 Quick Telemetry Badges */}
@@ -139,7 +176,7 @@ export default function Animals() {
                   </div>
                   <div className="rounded bg-canvas-sunken/80 px-1 py-1">
                     <p className="text-[10px] text-ink-faint uppercase">Temp</p>
-                    <p className={`font-semibold tabular ${a.temperature > 38.8 ? 'text-signal-red font-bold' : 'text-ink'}`}>
+                    <p className={`font-semibold tabular ${a.temperature > (a.species === 'Goat' ? 39.5 : 38.8) ? 'text-signal-red font-bold' : 'text-ink'}`}>
                       {a.temperature}°
                     </p>
                   </div>
@@ -154,10 +191,11 @@ export default function Animals() {
 
           {/* Desktop & Tablet Table View */}
           <div className="hidden md:block overflow-x-auto rounded-lg border border-line bg-canvas-raised shadow-card">
-            <table className="w-full min-w-[880px] border-collapse text-left text-[13px]">
+            <table className="w-full min-w-[920px] border-collapse text-left text-[13px]">
               <thead>
                 <tr className="border-b border-line text-[11px] uppercase tracking-wide text-ink-faint">
                   <th className="px-4 py-3 font-medium">Animal ID</th>
+                  <th className="px-4 py-3 font-medium">Species</th>
                   <th className="px-4 py-3 font-medium">Breed</th>
                   <th className="px-4 py-3 font-medium">Age</th>
                   <th className="px-4 py-3 font-medium">Lactation</th>
@@ -177,7 +215,28 @@ export default function Animals() {
                     onClick={() => navigate(`/animals/${a.id}`)}
                     className="cursor-pointer border-b border-line/70 last:border-0 hover:bg-canvas-sunken"
                   >
-                    <td className="px-4 py-3 font-semibold text-ink">{a.id}</td>
+                    <td className="px-4 py-3 font-semibold text-ink">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-base">{a.speciesEmoji || (a.species === 'Buffalo' ? '🐃' : a.species === 'Goat' ? '🐐' : '🐄')}</span>
+                        <span>{a.id}</span>
+                        {a.id === 'COW-024' && (
+                          <span className="rounded bg-pasture-100 text-pasture-800 dark:bg-pasture-900/50 dark:text-pasture-300 px-1.5 py-0.5 text-[10px] font-bold">
+                            Demo
+                          </span>
+                        )}
+                        {a.id === 'BUF-008' && (
+                          <span className="rounded bg-pasture-100 text-pasture-800 dark:bg-pasture-900/50 dark:text-pasture-300 px-1.5 py-0.5 text-[10px] font-bold">
+                            Demo
+                          </span>
+                        )}
+                        {a.id === 'GOT-004' && (
+                          <span className="rounded bg-pasture-100 text-pasture-800 dark:bg-pasture-900/50 dark:text-pasture-300 px-1.5 py-0.5 text-[10px] font-bold">
+                            Demo
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 font-medium text-ink">{a.species}</td>
                     <td className="px-4 py-3 text-ink-soft">{a.breed}</td>
                     <td className="px-4 py-3 text-ink-soft tabular">{a.age} yrs</td>
                     <td className="px-4 py-3 text-ink-soft tabular">{a.lactationNumber}</td>

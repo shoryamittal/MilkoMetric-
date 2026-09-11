@@ -18,12 +18,16 @@ export const DEVICE_COUNTS = {
   environmentalSensors: 6,
 }
 
-const wearableAnimals = ANIMALS.slice(0, 42)
+const wearableAnimals = [
+  ...ANIMALS.filter((a) => a.species === 'Cow').slice(0, 24),
+  ...ANIMALS.filter((a) => a.species === 'Buffalo').slice(0, 12),
+  ...ANIMALS.filter((a) => a.species === 'Goat').slice(0, 6),
+]
 export const DEVICES = [
   ...wearableAnimals.map((a, i) => ({
-    id: `ESP32-NODE-${a.id.split('-')[1]}`,
-    type: 'ESP32 Bio-Telemetry Node',
-    target: a.id,
+    id: `ESP32-${a.id}`,
+    type: `ESP32 Bio-Telemetry (${a.speciesEmoji} ${a.species})`,
+    target: `${a.id} (${a.breed})`,
     battery: Math.round(40 + rand() * 58),
     connection: rand() > 0.06 ? 'Connected' : 'Weak Signal',
     lastUpdateSec: Math.round(5 + rand() * 90),
