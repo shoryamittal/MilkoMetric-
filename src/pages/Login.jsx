@@ -141,20 +141,20 @@ export default function Login() {
             Welcome to AgriNex AI
           </h2>
           <p className="mt-1 text-sm text-ink-soft">
-            Enter your name to launch your personalized herd diagnostics console.
+            Enter your details to launch your personalized herd diagnostics console.
           </p>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             <div>
               <label htmlFor="name" className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink">
-                Your Name / Evaluator Tag
+                Username / Name
               </label>
               <input
                 id="name"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Shorya Mittal, Dr. Sharma, or leave blank"
+                placeholder="Enter your details here"
                 className="w-full rounded-md border border-line bg-canvas-raised px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-faint focus:border-pasture-500 focus:outline-none focus:ring-1 focus:ring-pasture-500 shadow-sm"
               />
               <span className="mt-1 block text-[11px] text-ink-faint">
@@ -164,14 +164,14 @@ export default function Login() {
 
             <div>
               <label htmlFor="password" className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink">
-                Password / Demo Passcode
+                Password
               </label>
               <input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Any passcode works for SIH evaluation"
+                placeholder="Enter your details here"
                 className="w-full rounded-md border border-line bg-canvas-raised px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-faint focus:border-pasture-500 focus:outline-none focus:ring-1 focus:ring-pasture-500 shadow-sm"
               />
               <span className="mt-1 block text-[11px] text-ink-faint">
